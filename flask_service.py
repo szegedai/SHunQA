@@ -16,14 +16,10 @@ qa_pipeline = pipeline(
 @app.route('/query/<query>')
 def predict_from_question(query):
     body = {
+        "size": 10,
         "query": {
             "match": {
                 "document": query
-            }
-        },
-        "highlight": {
-            "fields": {
-                "document": {}
             }
         }
     }
