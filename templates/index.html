@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block headline %}
+
+{% endblock %}
+{% block content %}
+
+<form action="/qa/" method = "POST">
+
+    <div class="form-group">
+        <h5><label for="query">Kérdés</label></h5>
+        <input class="form-control col-lg-10" type = "text" name = "query" value="{{query if query else ''}}" />
+    </div>
+    <input class="btn btn-primary mb-3" type = "submit" value = "Elküld" />
+</form>
+
+
+{% if data %}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Válasz</h5>
+        <p class="card-text">{{data.answer | safe}}</p>
+    </div>
+</div>
+
+<div id="accordion">
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Részletek
+          </button>
+        </h5>
+      </div>
+  
+      <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+          
+            <h5 class="card-title">Kontextus:</h5>
+            <p class="card-text">{{data.context | safe}}</p>
+          
+            <h5 class="card-title">Pontszám:</h5>
+            <p class="card-text">{{data.score | safe}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+{% endif %}
+
+<!--    <div class="main">-->
+<!--        <a href="https://www.interreg-central.eu/Content.Node/ProsperAMnet.html">About the project</a> <br />-->
+<!--    </div>-->
+
+{% endblock %}
+

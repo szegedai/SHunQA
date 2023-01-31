@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, render_template, jsonify, send_file
 from elasticsearch import Elasticsearch
 from transformers import pipeline, AutoTokenizer, AutoModelForQuestionAnswering
 
@@ -13,7 +13,7 @@ qa_pipeline = pipeline(
 )
 
 
-@app.route('/<query>')
+@app.route('/query/<query>')
 def predict_from_question(query):
     body = {
         "query": {
@@ -53,3 +53,14 @@ def predict_from_question(query):
                     "score": prediction['score']}
 
     return return_value
+    
+#@app.route('/qa/<query>')
+@app.route('/qa/', methods = ['POST', 'GET'])
+def predict_from_question_gui():
+
+    if request.method == 'POST':
+        query = request.form["query"]
+
+        return render_template('index.html', data=predict_from_question(query), query=query)
+    
+    return render_template('index.html', data=None, query=None)
