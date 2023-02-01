@@ -65,7 +65,7 @@ def predict_from_question_gui():
         query = request.form["query"]
         size = request.form["size"]
 
-        return render_template('index.html', data=predict_from_question(query, size), query=query)
+        return render_template('index.html', data=predict_from_question(query, size), query=query, size=size)
     
     return render_template('index.html', data=None, query=None)
 
