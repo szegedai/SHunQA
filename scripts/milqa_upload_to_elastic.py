@@ -1,17 +1,27 @@
 from elasticsearch import Elasticsearch
 import pandas as pd
+import os
 
-df = pd.read_csv('https://raw.githubusercontent.com/zsozso21/soc_media/main/milqa_short_answers.csv',
-                 names=['table_id', 'id', 'context', 'title', 'question', 'end', 'start', 'answer'],
+# df = pd.read_csv('https://raw.githubusercontent.com/zsozso21/soc_media/main/milqa_short_answers.csv',
+#                  names=['table_id', 'id', 'context', 'title', 'question', 'end', 'start', 'answer'],
+#                  header=1,
+#                  encoding='utf-8')
+
+df = pd.read_csv('/home/gszabo/PycharmProjects/elasticsearch-8.5.2-linux-x86_64/scripts/my_file.csv',
+                 names=['question', 'context'],
                  header=1,
                  encoding='utf-8')
 
-milqa_contexts = list()
+
+milqa_contexts_set = set()
 
 for index, record in df.iterrows():
     # print(record['context'])
-    replace = record['context'].replace("\n", "")
-    milqa_contexts.append(replace)
+    replace = record['context']#.replace("\n", " ")
+    milqa_contexts_set.add(replace)
+
+milqa_contexts = list(milqa_contexts_set)
+
 
 es = Elasticsearch(
     # "https://localhost:9200",
@@ -21,13 +31,15 @@ es = Elasticsearch(
     verify_certs=False
 )
 
+
 for i in range(len(milqa_contexts)):
 
     doc = {
-        'document': milqa_contexts[i]
+        'document': milqa_contexts[i].split("|||")[0],
+        'offical_document': milqa_contexts[i].split("|||")[1]
     }
 
-    resp = es.index(index="milqa", id=i, document=doc)
+    resp = es.index(index="milqa_w_lemma_w_offical_context", id=str(i), document=doc)
     # print(resp['result'])
     # if i == 15:
     #     break

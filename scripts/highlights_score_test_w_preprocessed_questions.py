@@ -47,7 +47,7 @@ import spacy
 
 # adatok kinyerése pd-ből, a már tisztított kérdésekkel
 
-df = pd.read_csv('clean_questions_milqa.csv',
+df = pd.read_csv('my_file.csv',
                  names=['question', 'context'],
                  header=1,
                  encoding='utf-8')
@@ -67,6 +67,7 @@ for index, record in df.iterrows():
     else:
         pass
     # if counter == 100:
+    #     print(42)
     #     break
     # counter += 1
 
@@ -121,7 +122,7 @@ def get_highlights(es, size):
                     }
                 }
             }
-            s = es.search(index='milqa', body=body)
+            s = es.search(index='milqa_w_lemma', body=body)
 
             result_contexts = list()
             for hit in s['hits']['hits']:
@@ -170,7 +171,7 @@ def get_highlights(es, size):
         print("összes vizsgált számon kívüli eset " + str(size) + " size mérettel: " + str(error_counter_check))
         print("összes eltalált/összes eset: " + str(summary_counter / len(milqa_contexts_dict)))
 
-        print("MMR: " + str(summary / len(milqa_contexts_dict)) + " | error counter: " + str(
+        print("MRR: " + str(summary / len(milqa_contexts_dict)) + " | error counter: " + str(
             error_counter))  # + "\n" + str(result_dict))# + "\n" + all_context[2] + "\n" + all_question[2])
 
     print(f"Time spent: {t.elapsed:.2f} seconds")
@@ -179,4 +180,4 @@ def get_highlights(es, size):
 
 
 if __name__ == '__main__':
-    print(get_highlights(es, 300))
+    print(get_highlights(es, 1))

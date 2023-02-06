@@ -41,10 +41,13 @@
   
       <div id="collapseOne{{line.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
         <div class="card-body">
-          
-            <h5 class="card-title">Kontextus:</h5>
-            <p class="card-text">{{line.context[:line.start] | safe}}<span style="background: #006fff2b; font-weight: bold; border-radius: 10px; padding: 4px">{{line.context[line.start:line.end] | safe}}</span>{{line.context[line.end:] | safe}}</p>
-          
+
+            <h5 class="card-title">Eredeti kontextus:</h5>
+            <p class="card-text">{{line.offical_context[:line.start] | safe}}<span style="background: #006fff2b; font-weight: bold; border-radius: 10px; padding: 4px">{{line.offical_context[line.start:line.end] | safe}}</span>{{line.offical_context[line.end:] | safe}}</p>
+
+{#            <h5 class="card-title">Lemmatizált kontextus:</h5>#}
+{#            <p class="card-text">{{line.context | safe}}</p>#}
+
             <h5 class="card-title">Pontszám:</h5>
             <p class="card-text">{{line.score | safe}}</p>
         </div>

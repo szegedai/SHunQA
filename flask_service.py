@@ -30,10 +30,10 @@ def predict_from_question(query, size):
         verify_certs=False
     )
 
-    s = es.search(index='milqa', body=body)
+    s = es.search(index='milqa_w_lemma_w_offical_context', body=body)
 
     # The query only returns the text before the question mark, so we add it here.
-    question = query + '?'
+    question = query if query[-1:] == '?' else query + '?'
     # We use the highest ranked document by the elasticsearch.
     contexts = list(s['hits']['hits'])
     return_value = list()
@@ -41,13 +41,15 @@ def predict_from_question(query, size):
 
     for context_raw in contexts:
         context = context_raw["_source"]["document"]
+        offical_context = context_raw["_source"]["offical_document"]
         prediction = qa_pipeline({
-            'context': context,
+            'context': offical_context,
             'question': question
         })
 
         return_value.append({"context": context,
                             "question": question,
+                            "offical_context": offical_context,
                             "answer": prediction['answer'],
                             "start": prediction['start'],
                             "end": prediction['end'],
@@ -55,7 +57,9 @@ def predict_from_question(query, size):
                             "id": id})
         id += 1
 
-    return return_value
+    return_value_sorted = sorted(return_value, key=lambda d: d['score'], reverse=True)
+
+    return return_value_sorted
     
 #@app.route('/qa/<query>')
 @app.route('/qa/', methods = ['POST', 'GET'])
