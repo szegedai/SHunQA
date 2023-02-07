@@ -16,17 +16,14 @@ df = pd.read_csv('/home/gszabo/PycharmProjects/elasticsearch-8.5.2-linux-x86_64/
 milqa_contexts_set = set()
 
 for index, record in df.iterrows():
-    # print(record['context'])
-    replace = record['context']#.replace("\n", " ")
+    replace = record['context']
     milqa_contexts_set.add(replace)
 
 milqa_contexts = list(milqa_contexts_set)
 
 
 es = Elasticsearch(
-    # "https://localhost:9200",
     "http://rgai3.inf.u-szeged.hu:3427/",
-    # ca_certs="/path/to/http_ca.crt",
     basic_auth=("elastic", "V7uek_ey6EdQbGBz_XHX"),
     verify_certs=False
 )
@@ -36,10 +33,10 @@ for i in range(len(milqa_contexts)):
 
     doc = {
         'document': milqa_contexts[i].split("|||")[0],
-        'offical_document': milqa_contexts[i].split("|||")[1]
+        'official_document': milqa_contexts[i].split("|||")[1]
     }
 
-    resp = es.index(index="milqa_w_lemma_w_offical_context", id=str(i), document=doc)
+    resp = es.index(index="milqa_w_lemma_w_official_context", id=str(i), document=doc)
     # print(resp['result'])
     # if i == 15:
     #     break

@@ -42,7 +42,7 @@ def predict_from_question(query, size):
         verify_certs=False
     )
 
-    s = es.search(index='milqa_w_lemma_w_offical_context', body=body)
+    s = es.search(index='milqa_w_lemma_w_official_context', body=body)
 
 
     # The query only returns the text before the question mark, so we add it here.
@@ -54,7 +54,7 @@ def predict_from_question(query, size):
 
     for context_raw in contexts:
         lemmatized_context = context_raw["_source"]["document"]
-        official_context = context_raw["_source"]["offical_document"]
+        official_context = context_raw["_source"]["official_document"]
         elastic_score = context_raw["_score"]
         prediction = qa_pipeline({
             'context': official_context,
