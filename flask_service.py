@@ -35,7 +35,6 @@ def predict_from_question(query, size):
             }
         }
     }
-    print(clean_question)
 
     es = Elasticsearch(
         "http://rgai3.inf.u-szeged.hu:3427/",  # localhostra átírni tesztelésre
