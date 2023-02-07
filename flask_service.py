@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, jsonify, send_file
 from elasticsearch import Elasticsearch
 from transformers import pipeline, AutoTokenizer, AutoModelForQuestionAnswering
+import spacy
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -12,17 +13,29 @@ qa_pipeline = pipeline(
     tokenizer=tokenizer
 )
 
+nlp_hu = spacy.load("hu_core_news_trf")
 
 @app.route('/query/<query>')
 def predict_from_question(query, size):
+    doc_q = nlp_hu(query)
+    clean_tokens = list()
+
+    for token in doc_q:
+        # print(token.text, token.pos_, token.dep_)
+        if token.pos_ not in ['DET', 'ADV', 'PRON', 'PUNCT']:
+            clean_tokens.append(token.lemma_)
+
+    clean_question = " ".join(clean_tokens)
+
     body = {
         "size": size,
         "query": {
             "match": {
-                "document": query
+                "document": clean_question
             }
         }
     }
+    print(clean_question)
 
     es = Elasticsearch(
         "http://rgai3.inf.u-szeged.hu:3427/",  # localhostra átírni tesztelésre
@@ -32,34 +45,35 @@ def predict_from_question(query, size):
 
     s = es.search(index='milqa_w_lemma_w_offical_context', body=body)
 
+
     # The query only returns the text before the question mark, so we add it here.
-    question = query if query[-1:] == '?' else query + '?'
+    official_question = query if query[-1:] == '?' else query + '?'
     # We use the highest ranked document by the elasticsearch.
     contexts = list(s['hits']['hits'])
     return_value = list()
     id = 0
 
     for context_raw in contexts:
-        context = context_raw["_source"]["document"]
-        offical_context = context_raw["_source"]["offical_document"]
+        lemmatized_context = context_raw["_source"]["document"]
+        official_context = context_raw["_source"]["offical_document"]
+        elastic_score = context_raw["_score"]
         prediction = qa_pipeline({
-            'context': offical_context,
-            'question': question
+            'context': official_context,
+            'question': official_question
         })
 
-        return_value.append({"context": context,
-                            "question": question,
-                            "offical_context": offical_context,
+        return_value.append({"lemmatized_context": lemmatized_context,
+                            "official_question": official_question,
+                            "official_context": official_context,
                             "answer": prediction['answer'],
                             "start": prediction['start'],
                             "end": prediction['end'],
-                            "score": prediction['score'],
+                            "model_score": prediction['score'],
+                            "elastic_score": elastic_score,
                             "id": id})
         id += 1
 
-    return_value_sorted = sorted(return_value, key=lambda d: d['score'], reverse=True)
-
-    return return_value_sorted
+    return return_value
     
 #@app.route('/qa/<query>')
 @app.route('/qa/', methods = ['POST', 'GET'])
