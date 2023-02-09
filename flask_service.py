@@ -16,7 +16,7 @@ qa_pipeline = pipeline(
 nlp_hu = spacy.load("hu_core_news_trf")
 
 @app.route('/query/<query>')
-def predict_from_question(query, size):
+def predict_from_question(query, size, elastic):
     doc_q = nlp_hu(query)
     clean_tokens = list()
 
@@ -42,7 +42,7 @@ def predict_from_question(query, size):
         verify_certs=False
     )
 
-    s = es.search(index='milqa_w_lemma_w_official_context', body=body)
+    s = es.search(index=elastic, body=body)
 
 
     # The query only returns the text before the question mark, so we add it here.
@@ -81,10 +81,17 @@ def predict_from_question_gui():
     if request.method == 'POST':
         query = request.form["query"]
         size = request.form["size"]
+        elastic = request.form["elastic"]
 
-        return render_template('index.html', data=predict_from_question(query, size), query=query, size=size)
+        return render_template('index.html',
+                               data=predict_from_question(query, size, elastic),
+                               query=query,
+                               size=size,
+                               elastic=elastic)
     
-    return render_template('index.html', data=None, query=None)
+    return render_template('index.html',
+                           data=None,
+                           query=None)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

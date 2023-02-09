@@ -7,38 +7,54 @@
 
 {% endblock %}
 {% block content %}
+<div class="jumbotron pb-4">
+    <form action="/qa/" method = "POST">
 
-<form action="/qa/" method = "POST">
-
-    <div class="form-group">
-        <h5><label for="query">Kérdés</label></h5>
-        <input class="form-control col-lg-10" type = "text" name = "query" value="{{query if query else ''}}" />
-        <input class="form-control col-lg-10" type = "text" name = "size" value="{{size if size else '1'}}" />
-    </div>
-    <input class="btn btn-primary mb-3" type = "submit" value = "Elküld" />
-</form>
-
+        <h1 class="display-4">ShunQA</h1>
+        <p class="lead">Szeged Hungarian Question Answering vagyis Sonkaaaaa</p>
+        <hr class="my-4">
+        <div class="form-row">
+            <div class="col-lg-10">
+                <label for="question">Mi a kérdésed hozzám?</label>
+                <input id="question" class="form-control" type="text" placeholder="Mikor építették a vízlépcsőket a Duna felső szakaszán?" name="query" value="{{query if query else ''}}" />
+            </div>
+            <div class="col-lg-2">
+                <label for="size">Méret</label>
+                <input id="size" class="form-control" type="text" placeholder="Mélység" name="size" value="{{size if size else '10'}}" />
+            </div>
+        </div>
+        <div class="form-row mt-2">
+            <div class="col-lg-12">
+                <label for="elastic-table">Elastic tábla kiválasztás:</label>
+                <select name="elastic" class="form-control" aria-label="Default select example" id="elastic-table">
+                    <option value="milqa">milqa</option>
+                    <option value="milqa_w_lemma_w_official_context" selected>milqa_w_lemma_w_official_context</option>
+                    <option value="word_war_2_wikidump">word_war_2_wikidump</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row mt-4">
+            <div class="col-lg-12 text-right">
+                <input class="btn btn-primary" type="submit" value="Elküld" />
+            </div>
+        </div>
+    </form>
+</div>
 
 {% if data %}
 {% for line in data %}
 
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">Válasz</h5>
-        <p class="card-text">{{line.answer | safe}}</p>
-    </div>
-</div>
-
-<div id="accordion">
+<div id="accordion" class="mb-3">
     <div class="card">
       <div class="card-header" id="headingOne">
-        <h5 class="mb-0">
-          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne{{line.id}}" aria-expanded="true" aria-controls="collapseOne">
-            Részletek
-          </button>
-        </h5>
+          <b>Válasz:</b>
+          <h5 class="mb-0">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne{{line.id}}" aria-expanded="true" aria-controls="collapseOne">
+                {{line.answer | safe}}
+              </button>
+          </h5>
       </div>
-  
+
       <div id="collapseOne{{line.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
         <div class="card-body">
 

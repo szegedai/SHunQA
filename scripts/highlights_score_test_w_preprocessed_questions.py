@@ -2,98 +2,6 @@ from elasticsearch import Elasticsearch
 import pandas as pd
 from contexttimer import Timer
 
-# huspacy-vel a kérdések/adatok előfeldolgozása/tisztása
-
-import spacy
-
-# pip install https://huggingface.co/huspacy/hu_core_news_trf/resolve/main/hu_core_news_trf-any-py3-none-any.whl
-# nlp = spacy.load("hu_core_news_trf")
-#
-# nlp.remove_pipe('experimental_arc_predicter')
-# nlp.remove_pipe('experimental_arc_labeler')
-# nlp.remove_pipe('ner')
-#
-# df = pd.read_csv('https://raw.githubusercontent.com/zsozso21/soc_media/main/milqa_short_answers.csv',
-#                  names=['table_id', 'id', 'context', 'title', 'question', 'end', 'start', 'answer'],
-#                  header=1,
-#                  encoding='utf-8')
-#
-# milqa_contexts_dict = dict()
-# clean_tokens = list()
-#
-# counter = 0
-# for index, record in df.iterrows():
-#     context = record['context']
-#     question = record['question']
-#     doc = nlp(question)
-#
-#     for token in doc:
-#         # print(token.text, token.pos_, token.dep_)
-#         if token.pos_ not in ['DET', 'ADV', 'PRON', 'PUNCT']:
-#             clean_tokens.append(token.text)
-#
-#     clean_question = " ".join(clean_tokens)
-#
-#     if clean_question not in milqa_contexts_dict:
-#         milqa_contexts_dict[clean_question] = context
-#         clean_question = ""
-#         clean_tokens = list()
-#     else:
-#         clean_question = ""
-#         clean_tokens = list()
-#     if counter == 100:
-#         break
-#     counter += 1
-
-# adatok kinyerése pd-ből, a már tisztított kérdésekkel
-
-df = pd.read_csv('my_file.csv',
-                 names=['question', 'context'],
-                 header=1,
-                 encoding='utf-8')
-
-milqa_contexts_dict = dict()
-
-clean_question = ""
-context = ""
-counter = 0
-
-for index, record in df.iterrows():
-    clean_question = record['question']
-    context = record['context']
-
-    if clean_question not in milqa_contexts_dict:
-        milqa_contexts_dict[clean_question] = context
-    else:
-        pass
-    # if counter == 100:
-    #     print(42)
-    #     break
-    # counter += 1
-
-
-    # adatok kinyerése, ha txt fájlból kell kiszedni az adatokat
-    # if line.startswith("\n"):
-    #     if clean_question not in milqa_contexts_dict:
-    #         context = " ".join(context_list)
-    #         milqa_contexts_dict[clean_question] = context
-    #         clean_question = ""
-    #         context = ""
-    #     else:
-    #         clean_question = ""
-    #         context = ""
-    #     continue
-    #
-    # if len(line.split(":")) > 1:
-    #     clean_question = line.split(":")[0]
-    #     context_list.append(line.split(":")[1][1:])
-    #
-    # if len(line.split(":")) == 1:
-    #     context_list.append(line)
-
-
-
-
 es = Elasticsearch(
     "http://rgai3.inf.u-szeged.hu:3427/",
     basic_auth=("elastic", "V7uek_ey6EdQbGBz_XHX"),
@@ -101,7 +9,25 @@ es = Elasticsearch(
 )
 
 
-def get_highlights(es, size):
+def get_highlights(csv, es, size):
+    # adatok kinyerése pd-ből, a már tisztított kérdésekkel
+
+    df = pd.read_csv(csv,
+                     names=['question', 'context'],
+                     header=1,
+                     encoding='utf-8')
+
+    milqa_contexts_dict = dict()
+
+    for index, record in df.iterrows():
+        clean_question = record['question']
+        context = record['context']
+
+        if clean_question not in milqa_contexts_dict:
+            milqa_contexts_dict[clean_question] = context
+        else:
+            pass
+
     with Timer() as t:
         result_dict = dict()
         error_counter = 0
@@ -111,7 +37,7 @@ def get_highlights(es, size):
         all_question = list()
         for key, value in milqa_contexts_dict.items():
             question = key
-            context = value
+            official_context = value.split("|||")[1]
 
             # query top 10 guesses
             body = {
@@ -122,32 +48,33 @@ def get_highlights(es, size):
                     }
                 }
             }
-            s = es.search(index='milqa_w_lemma', body=body)
+            s = es.search(index='milqa_w_lemma_w_official_context', body=body)
 
             result_contexts = list()
+            result_official_contexts = list()
             for hit in s['hits']['hits']:
                 result_contexts.append(hit["_source"]["document"])
+                result_official_contexts.append(hit["_source"]["official_document"])
 
             # error_dict = dict()
-            result_contexts_set = set(single_context for single_context in result_contexts)
-            if context in result_contexts_set:
+            result_official_contexts_set = set(single_context for single_context in result_official_contexts)
+            if official_context in result_official_contexts_set:
                 match_counter = 1
                 result_number = 0
-                for result_context in result_contexts:
-                    if result_context == context:
+                for result_official_context in result_official_contexts:
+                    if result_official_context == official_context:
                         result_number = match_counter
                         break
                     else:
                         match_counter += 1
                 match_len += 1
-                all_context.append(value)  # .replace("\n", " "))
+                all_context.append(value)
                 all_question.append(key)
             else:
                 error_counter += 1
                 result_number = 'Nincs benne'
-                all_context.append(value)  # .replace("\n", " "))
+                all_context.append(value)
                 all_question.append(key)
-                # error_dict[question] = [context]
 
             if isinstance(result_number, str):
                 result_dict[id] = result_number
@@ -169,7 +96,7 @@ def get_highlights(es, size):
         print("összes eltalát eset " + str(size) + " size mérettel: " + str(summary_counter))
         print("összes eset " + str(size) + " size mérettel: " + str(len(milqa_contexts_dict)))
         print("összes vizsgált számon kívüli eset " + str(size) + " size mérettel: " + str(error_counter_check))
-        print("összes eltalált/összes eset: " + str(summary_counter / len(milqa_contexts_dict)))
+        print("összes eltalált/összes eset (Precision@k): " + str(summary_counter / len(milqa_contexts_dict)))
 
         print("MRR: " + str(summary / len(milqa_contexts_dict)) + " | error counter: " + str(
             error_counter))  # + "\n" + str(result_dict))# + "\n" + all_context[2] + "\n" + all_question[2])
@@ -180,4 +107,40 @@ def get_highlights(es, size):
 
 
 if __name__ == '__main__':
-    print(get_highlights(es, 1))
+    csv = 'q_wPoS_wLemma_c_wLemma_c_wOfficial.csv'
+    # csv = 'q_wLemma_c_wLemma_c_wOfficial.csv'
+    print(get_highlights(csv, es, 300))
+
+# posLemma: 12769 lemma: 12845
+
+# 1 pos lemma:
+# összes eltalát eset 1 size mérettel: 8393
+# összes eset 1 size mérettel: 12769
+# összes vizsgált számon kívüli eset 1 size mérettel: 4376
+# összes eltalált/összes eset (Precision@k): 0.657295011355627
+# MRR: 0.657295011355627 | error counter: 4376
+# Time spent: 75.06 seconds
+#
+# 300 pos lemma:
+# összes eltalát eset 300 size mérettel: 12559
+# összes eset 300 size mérettel: 12769
+# összes vizsgált számon kívüli eset 300 size mérettel: 210
+# összes eltalált/összes eset (Precision@k): 0.9835539196491503
+# MRR: 0.7494510958150116 | error counter: 210
+# Time spent: 480.42 seconds
+#
+# 300 lemma:
+# összes eltalát eset 300 size mérettel: 12638
+# összes eset 300 size mérettel: 12845
+# összes vizsgált számon kívüli eset 300 size mérettel: 207
+# összes eltalált/összes eset (Precision@k): 0.9838847800700662
+# MRR: 0.7403596956400766 | error counter: 207
+# Time spent: 599.05 seconds
+#
+# 1 lemma
+# összes eltalát eset 1 size mérettel: 8315
+# összes eset 1 size mérettel: 12845
+# összes vizsgált számon kívüli eset 1 size mérettel: 4530
+# összes eltalált/összes eset (Precision@k): 0.64733359283768
+# MRR: 0.64733359283768 | error counter: 4530
+# Time spent: 80.92 seconds
