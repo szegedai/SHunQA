@@ -5,13 +5,24 @@ import spacy
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
-tokenizer = AutoTokenizer.from_pretrained("ZTamas/hubert-qa-milqa")
-model = AutoModelForQuestionAnswering.from_pretrained("ZTamas/hubert-qa-milqa")
+# tokenizer = AutoTokenizer.from_pretrained("ZTamas/hubert-qa-milqa")
+# model = AutoModelForQuestionAnswering.from_pretrained("ZTamas/hubert-qa-milqa")
+# qa_pipeline = pipeline(
+#     "question-answering",
+#     model=model,
+#     tokenizer=tokenizer
+# )
+
 qa_pipeline = pipeline(
-    "question-answering",
-    model=model,
-    tokenizer=tokenizer
-)
+  "question-answering",
+  model="ZTamas/xlm-roberta-large-squad2_impossible_long_answer",
+  tokenizer="ZTamas/xlm-roberta-large-squad2_impossible_long_answer",
+  device=0,                      #GPU selection, -1 on CPU
+  handle_impossible_answer=True,
+  max_answer_len=1000            #This can be modified, but to let the model's
+                                   #answer be as long as it wants so I
+                                   #decided to add a big number
+  )
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
