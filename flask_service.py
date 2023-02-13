@@ -17,7 +17,7 @@ qa_pipeline = pipeline(
   "question-answering",
   model="ZTamas/xlm-roberta-large-squad2_impossible_long_answer",
   tokenizer="ZTamas/xlm-roberta-large-squad2_impossible_long_answer",
-  device=0,                      #GPU selection, -1 on CPU
+  device=-1,                      #GPU selection, -1 on CPU
   handle_impossible_answer=True,
   max_answer_len=1000            #This can be modified, but to let the model's
                                    #answer be as long as it wants so I
