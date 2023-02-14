@@ -28,8 +28,16 @@
                 <label for="elastic-table">Elastic tábla kiválasztás:</label>
                 <select name="elastic" class="form-control" aria-label="Default select example" id="elastic-table">
 {#                    <option value="milqa">milqa</option>#}
-                    <option value="milqa_w_lemma_w_official_context" selected>milqa_w_lemma_w_official_context</option>
-                    <option value="word_war_2_wikidump">word_war_2_wikidump</option>
+                    {% if elastic == "milqa_w_lemma_w_official_context" %}
+                    <option value="milqa_w_lemma_w_official_context" selected>MilQA</option>
+                    <option value="word_war_2_wikidump">WW2 wikidump</option>
+                    {% elif elastic == "word_war_2_wikidump" %}
+                    <option value="milqa_w_lemma_w_official_context" >MilQA</option>
+                    <option value="word_war_2_wikidump" selected>WW2 wikidump</option>
+                    {% else %}
+                    <option value="milqa_w_lemma_w_official_context" selected>MilQA</option>
+                    <option value="word_war_2_wikidump">WW2 wikidump</option>
+                    {% endif %}
                 </select>
             </div>
         </div>
