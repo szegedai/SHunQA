@@ -1,0 +1,35 @@
+{
+  "roberta_qa_pipeline" : [
+    {
+      "pipeline" : "question-answering"
+    },
+    {
+      "tokenizer": "ZTamas/xlm-roberta-large-squad2_impossible_long_answer"
+    },
+    {
+      "model" : "ZTamas/xlm-roberta-large-squad2_impossible_long_answer"
+    },
+    {
+      "device" : "-1"
+    },
+    {
+      "handle_impossible_answer" : "True"
+    },
+    {
+      "max_answer_len" : "1000"
+    }
+  ],
+
+  "hubert_qa_pipeline" : [
+      {
+        "tokenizer" : "ZTamas/hubert-qa-milqa"
+      },
+      {
+        "model" : "ZTamas/hubert-qa-milqa"
+      },
+      {
+        "pipeline" : "question-answering"
+      }
+    ]
+  }
+
