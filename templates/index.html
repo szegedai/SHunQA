@@ -55,11 +55,18 @@
 <div id="accordion" class="mb-3">
     <div class="card">
       <div class="card-header" id="headingOne">
-          <b>Válasz:</b>
           <h5 class="mb-0">
+              {% if len(line.answer) > 0 %}
+              <div>
+                  {{line.answer | safe}}
+              </div>
               <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne{{line.id}}" aria-expanded="true" aria-controls="collapseOne">
-                {{line.answer | safe}}
+                  Részletek:
               </button>
+              {% else %}
+              <div>
+                  Nem tudom a választ, sajnálom. :(
+              </div>
           </h5>
       </div>
 
