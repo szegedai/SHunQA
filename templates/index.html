@@ -56,7 +56,7 @@
     <div class="card">
       <div class="card-header" id="headingOne">
           <h5 class="mb-0">
-              {% if len(line.answer) > 0 %}
+              {% if line.answer != "" %}
               <div>
                   {{line.answer | safe}}
               </div>
