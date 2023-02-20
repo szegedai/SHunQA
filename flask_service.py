@@ -134,7 +134,7 @@ def rest_api():
 
     return jsonify(query)
 
-# curl -X POST https://chatbot-rgai3.inf.u-szeged.hu/api/qa/ -H 'Content-Type: application/json' -d @./web_service/data.json
+# curl -X POST https://chatbot-rgai3.inf.u-szeged.hu/qa/api/ -H 'Content-Type: application/json' -d @./web_service/data.json
 
 
 if __name__ == '__main__':

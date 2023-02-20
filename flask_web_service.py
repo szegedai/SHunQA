@@ -16,4 +16,4 @@ json_result = requests.post(url=url,
 print(json.loads(json_result))
 
 # with curl (CLI)
-# curl -X POST https://chatbot-rgai3.inf.u-szeged.hu/api/qa/ -H 'Content-Type: application/json' -d @./web_service/data.json
+# curl -X POST https://chatbot-rgai3.inf.u-szeged.hu/qa/api -H 'Content-Type: application/json' -d @./web_service/data.json
