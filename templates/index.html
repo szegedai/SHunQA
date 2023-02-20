@@ -47,7 +47,7 @@
                     {% if model_type == "hubert" %}
                     <option value="hubert" selected>huBERT</option>
                     <option value="xlm-roberta-large">XLM-RoBERTa-large</option>
-                    {% elig model_type == "xlm-roberta-large" %}
+                    {% elif model_type == "xlm-roberta-large" %}
                     <option value="hubert">huBERT</option>
                     <option value="xlm-roberta-large" selected>XLM-RoBERTa-large</option>
                     {% else %}
