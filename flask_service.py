@@ -18,34 +18,34 @@ qa_pipeline_hubert = pipeline(question_answering_hubert,
                               model=model_hubert,
                               tokenizer=tokenizer_hubert)
 
-# question_answering_roberta = config_variables["roberta_qa_pipeline"][0]["pipeline"]
-# tokenizer_roberta = config_variables["roberta_qa_pipeline"][1]["tokenizer"]
-# model_roberta = config_variables["roberta_qa_pipeline"][2]["model"]
-# device_roberta = int(config_variables["roberta_qa_pipeline"][3]["device"])
-# handle_impossible_answer_roberta = bool(config_variables["roberta_qa_pipeline"][4]["handle_impossible_answer"])
-# max_answer_len_roberta = int(config_variables["roberta_qa_pipeline"][5]["max_answer_len"])
-#
-# qa_pipeline_roberta = pipeline(question_answering_roberta,
-#                                tokenizer=tokenizer_roberta,
-#                                model=model_roberta,
-#                                device=device_roberta,
-#                                handle_impossible_answer=handle_impossible_answer_roberta,
-#                                max_answer_len=max_answer_len_roberta)
+question_answering_roberta = config_variables["roberta_qa_pipeline"][0]["pipeline"]
+tokenizer_roberta = config_variables["roberta_qa_pipeline"][1]["tokenizer"]
+model_roberta = config_variables["roberta_qa_pipeline"][2]["model"]
+device_roberta = int(config_variables["roberta_qa_pipeline"][3]["device"])
+handle_impossible_answer_roberta = bool(config_variables["roberta_qa_pipeline"][4]["handle_impossible_answer"])
+max_answer_len_roberta = int(config_variables["roberta_qa_pipeline"][5]["max_answer_len"])
+
+qa_pipeline_roberta = pipeline(question_answering_roberta,
+                               tokenizer=tokenizer_roberta,
+                               model=model_roberta,
+                               device=device_roberta,
+                               handle_impossible_answer=handle_impossible_answer_roberta,
+                               max_answer_len=max_answer_len_roberta)
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
 
 @app.route('/query/<query>')
 def predict_from_question(query, size, elastic, model_type):
-    # doc_q = nlp_hu(query)
-    # clean_tokens = list()
-    #
-    # for token in doc_q:
-    #     # print(token.text, token.pos_, token.dep_)
-    #     if token.pos_ not in ['DET', 'ADV', 'PRON', 'PUNCT']:
-    #         clean_tokens.append(token.lemma_)
-    #
-    # clean_question = " ".join(clean_tokens)
+    doc_q = nlp_hu(query)
+    clean_tokens = list()
+
+    for token in doc_q:
+        # print(token.text, token.pos_, token.dep_)
+        if token.pos_ not in ['DET', 'ADV', 'PRON', 'PUNCT']:
+            clean_tokens.append(token.lemma_)
+
+    clean_question = " ".join(clean_tokens)
 
     prediction = dict()
 
@@ -53,7 +53,7 @@ def predict_from_question(query, size, elastic, model_type):
         "size": size,
         "query": {
             "match": {
-                "document": query
+                "document": clean_question
             }
         }
     }
@@ -83,11 +83,11 @@ def predict_from_question(query, size, elastic, model_type):
                 'context': official_context,
                 'question': official_question
             })
-        # elif model_type == "xlm-roberta-large":
-        #     prediction = qa_pipeline_roberta({
-        #         'context': official_context,
-        #         'question': official_question
-        #     })
+        elif model_type == "xlm-roberta-large":
+            prediction = qa_pipeline_roberta({
+                'context': official_context,
+                'question': official_question
+            })
 
         return_value.append({"lemmatized_context": lemmatized_context,
                              "official_question": official_question,
