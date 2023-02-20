@@ -7,7 +7,7 @@ import requests
 with open("rest_api_example_files/data.json", "r") as f:
     data = json.load(f)
 headers = {"Content-Type": "application/json"}
-url = "https://chatbot-rgai3.inf.u-szeged.hu/qa/api"
+url = "https://chatbot-rgai3.inf.u-szeged.hu/qa/api/"
 # url = "http://localhost:5000/qa/api"
 
 json_result = requests.post(url=url,
