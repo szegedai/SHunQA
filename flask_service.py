@@ -129,12 +129,10 @@ def rest_api():
     record = json.loads(request.data)
     query = predict_from_question(record["query"], record["size"], record["elastic"], record["model_type"])
 
-    with open("./web_service/result.json", "w") as result:
-        result.write(json.dumps(query, indent=4))
-
+    app.logger.info(record)
     return jsonify(query)
 
-# curl -X POST https://chatbot-rgai3.inf.u-szeged.hu/qa/api/ -H 'Content-Type: application/json' -d @./web_service/data.json
+# curl -X POST https://chatbot-rgai3.inf.u-szeged.hu/qa/api/ -H 'Content-Type: application/json' -d @./rest_api_example_files/data.json
 
 
 if __name__ == '__main__':
