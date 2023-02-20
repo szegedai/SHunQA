@@ -104,7 +104,7 @@ def predict_from_question(query, size, elastic, model_type):
 
 
 # @app.route('/qa/<query>')
-@app.route('/qa/', methods=['POST', 'GET'])
+@app.route('/qa/', methods=['GET', 'POST'])
 def predict_from_question_gui():
     if request.method == 'POST':
         query = request.form["query"]
@@ -122,6 +122,19 @@ def predict_from_question_gui():
     return render_template('index.html',
                            data=None,
                            query=None)
+
+
+@app.route('/api/qa/', methods=['GET', 'POST'])
+def rest_api():
+    record = json.loads(request.data)
+    query = predict_from_question(record["query"], record["size"], record["elastic"], record["model_type"])
+
+    with open("./web_service/result.json", "w") as f:
+        f.write(json.dumps(query, indent=4))
+
+    return jsonify(query)
+
+# curl -X POST localhost:5000/api/qa/ -H 'Content-Type: application/json' -d @./web_service/data.json
 
 
 if __name__ == '__main__':
