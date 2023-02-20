@@ -7,7 +7,7 @@ import requests
 with open("web_service/data.json", "r") as f:
     data = json.load(f)
 headers = {"Content-Type": "application/json"}
-url = "http://localhost:5000/api/qa"
+url = "https://chatbot-rgai3.inf.u-szeged.hu/qa/api"
 
 json_result = requests.post(url=url,
                             headers=headers,

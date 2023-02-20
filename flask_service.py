@@ -7,8 +7,8 @@ import json
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
-with open('config.json', 'r') as f:
-    config_variables = json.load(f)
+with open('config.json', 'r') as config:
+    config_variables = json.load(config)
 
 question_answering_hubert = config_variables["hubert_qa_pipeline"][2]["pipeline"]
 tokenizer_hubert = AutoTokenizer.from_pretrained(config_variables["hubert_qa_pipeline"][0]["tokenizer"])
@@ -124,13 +124,13 @@ def predict_from_question_gui():
                            query=None)
 
 
-@app.route('/qa/api/', methods=['GET', 'POST'])
+@app.route('/api/qa/', methods=['GET', 'POST'])
 def rest_api():
     record = json.loads(request.data)
     query = predict_from_question(record["query"], record["size"], record["elastic"], record["model_type"])
 
-    with open("./web_service/result.json", "w") as f:
-        f.write(json.dumps(query, indent=4))
+    with open("./web_service/result.json", "w") as result:
+        result.write(json.dumps(query, indent=4))
 
     return jsonify(query)
 
