@@ -124,7 +124,7 @@ def predict_from_question_gui():
                            query=None)
 
 
-@app.route('/qa/api', methods=['GET', 'POST'])
+@app.route('/qa/api/', methods=['GET', 'POST'])
 def rest_api():
     record = json.loads(request.data)
     query = predict_from_question(record["query"], record["size"], record["elastic"], record["model_type"])
