@@ -27,7 +27,6 @@
             <div class="col-lg-12">
                 <label for="elastic-table">Elastic tábla kiválasztás:</label>
                 <select name="elastic" class="form-control" aria-label="Default select example" id="elastic-table">
-{#                    <option value="milqa">milqa</option>#}
                     {% if elastic == "milqa_w_lemma_w_official_context" %}
                     <option value="milqa_w_lemma_w_official_context" selected>MilQA</option>
                     <option value="word_war_2_wikidump">WW2 wikidump</option>
@@ -45,8 +44,16 @@
             <div class="col-lg-12">
                 <label for="model_type-table">Modell kiválasztás:</label>
                 <select name="model_type" class="form-control" aria-label="Default select example" id="model_type-table">
+                    {% if model_type == "hubert" %}
                     <option value="hubert" selected>huBERT</option>
                     <option value="xlm-roberta-large">XLM-RoBERTa-large</option>
+                    {% elig model_type == "xlm-roberta-large" %}
+                    <option value="hubert">huBERT</option>
+                    <option value="xlm-roberta-large" selected>XLM-RoBERTa-large</option>
+                    {% else %}
+                    <option value="hubert" selected>huBERT</option>
+                    <option value="xlm-roberta-large">XLM-RoBERTa-large</option>
+                    {% endif %}
                 </select>
             </div>
         </div>
