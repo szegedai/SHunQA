@@ -45,7 +45,6 @@
             <div class="col-lg-12">
                 <label for="model_type-table">Modell kiválasztás:</label>
                 <select name="model_type" class="form-control" aria-label="Default select example" id="model_type-table">
-{#                    <option value="milqa">milqa</option>#}
                     <option value="hubert" selected>huBERT</option>
                     <option value="xlm-roberta-large">XLM-RoBERTa-large</option>
                 </select>
@@ -65,11 +64,19 @@
 <div id="accordion" class="mb-3">
     <div class="card">
       <div class="card-header" id="headingOne">
-          <b>Válasz:</b>
           <h5 class="mb-0">
+              {% if line.answer != "" %}
+              <div>
+                  {{line.answer | safe}}
+              </div>
               <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne{{line.id}}" aria-expanded="true" aria-controls="collapseOne">
-                {{line.answer | safe}}
+                  Részletek:
               </button>
+              {% else %}
+              <div>
+                  Nem tudom a választ, sajnálom. :(
+              </div>
+              {% endif %}
           </h5>
       </div>
 
