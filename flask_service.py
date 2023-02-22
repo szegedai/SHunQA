@@ -10,27 +10,20 @@ app.config['JSON_AS_ASCII'] = False
 with open('config.json', 'r') as config:
     config_variables = json.load(config)
 
-question_answering_hubert = config_variables["hubert_qa_pipeline"][2]["pipeline"]
-tokenizer_hubert = AutoTokenizer.from_pretrained(config_variables["hubert_qa_pipeline"][0]["tokenizer"])
-model_hubert = AutoModelForQuestionAnswering.from_pretrained(config_variables["hubert_qa_pipeline"][1]["model"])
+all_models = dict()
+all_elastics = dict()
 
-qa_pipeline_hubert = pipeline(question_answering_hubert,
-                              model=model_hubert,
-                              tokenizer=tokenizer_hubert)
+for model in config_variables["models"]:
+    all_models[model["model"]] = pipeline(model["pipeline"],
+                                          tokenizer=model["tokenizer"],
+                                          model=model["model"],
+                                          device=model["device"],
+                                          handle_impossible_answer=bool(model["handle_impossible_answer"]),
+                                          max_answer_len=model["max_answer_len"])
 
-question_answering_roberta = config_variables["roberta_qa_pipeline"][0]["pipeline"]
-tokenizer_roberta = config_variables["roberta_qa_pipeline"][1]["tokenizer"]
-model_roberta = config_variables["roberta_qa_pipeline"][2]["model"]
-device_roberta = int(config_variables["roberta_qa_pipeline"][3]["device"])
-handle_impossible_answer_roberta = bool(config_variables["roberta_qa_pipeline"][4]["handle_impossible_answer"])
-max_answer_len_roberta = int(config_variables["roberta_qa_pipeline"][5]["max_answer_len"])
 
-qa_pipeline_roberta = pipeline(question_answering_roberta,
-                               tokenizer=tokenizer_roberta,
-                               model=model_roberta,
-                               device=device_roberta,
-                               handle_impossible_answer=handle_impossible_answer_roberta,
-                               max_answer_len=max_answer_len_roberta)
+for elastic_table in config_variables["elastics"]:
+    all_elastics[elastic_table["elastic_table_name"]] = elastic_table["elastic_table_name"]
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
@@ -47,8 +40,6 @@ def predict_from_question(query, size, elastic, model_type):
 
     clean_question = " ".join(clean_tokens)
 
-    prediction = dict()
-
     body = {
         "size": size,
         "query": {
@@ -64,7 +55,7 @@ def predict_from_question(query, size, elastic, model_type):
         verify_certs=False
     )
 
-    s = es.search(index=elastic, body=body)
+    s = es.search(index=all_elastics[elastic], body=body)
 
     # The query only returns the text before the question mark, so we add it here.
     official_question = query if query[-1:] == '?' else query + '?'
@@ -78,16 +69,11 @@ def predict_from_question(query, size, elastic, model_type):
         official_context = context_raw["_source"]["official_document"]
         elastic_score = context_raw["_score"]
 
-        if model_type == "hubert":
-            prediction = qa_pipeline_hubert({
-                'context': official_context,
-                'question': official_question
-            })
-        elif model_type == "xlm-roberta-large":
-            prediction = qa_pipeline_roberta({
-                'context': official_context,
-                'question': official_question
-            })
+        qa_pipeline = all_models[model_type]
+        prediction = qa_pipeline({
+            'context': official_context,
+            'question': official_question
+        })
 
         return_value.append({"lemmatized_context": lemmatized_context,
                              "official_question": official_question,
@@ -117,11 +103,17 @@ def predict_from_question_gui():
                                query=query,
                                size=size,
                                elastic=elastic,
-                               model_type=model_type)
+                               config_variables_elastics=config_variables["elastics"],
+                               model_type=model_type,
+                               config_variables_models=config_variables["models"])
 
     return render_template('index.html',
                            data=None,
-                           query=None)
+                           query=None,
+                           elastic=config_variables["elastics"][0]["elastic_table_name"],
+                           config_variables_elastics=config_variables["elastics"],
+                           model_type=config_variables["models"][0]["model"],
+                           config_variables_models=config_variables["models"])
 
 
 @app.route('/qa/api/', methods=['GET', 'POST'])
