@@ -60,13 +60,18 @@ def predict_from_question(query, size, elastic, model_type):
     return_value = list()
     id = 0
 
+    print(all_models[model_type])
+
     for context_raw in contexts:
         lemmatized_context = context_raw["_source"]["document"]
         official_context = context_raw["_source"]["official_document"]
         elastic_score = context_raw["_score"]
 
+        qa_pipeline = all_models[model_type]
 
-        prediction = all_models[model_type]({
+        print(qa_pipeline)
+
+        prediction = qa_pipeline({
             'context': official_context,
             'question': official_question
         })
@@ -82,7 +87,7 @@ def predict_from_question(query, size, elastic, model_type):
                              "id": id})
         id += 1
 
-    print(all_models[model_type])
+
 
     return return_value
 
