@@ -102,7 +102,7 @@ def predict_from_question_gui():
                                data=predict_from_question(query, size, elastic, model_type),
                                query=query,
                                size=size,
-                               elastic=config_variables["elastics"],
+                               elastic=elastic,
                                config_variables_elastics=config_variables["elastics"],
                                model_type=model_type,
                                config_variables_models=config_variables["models"])

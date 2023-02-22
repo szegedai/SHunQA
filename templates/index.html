@@ -29,7 +29,7 @@
                 <select name="elastic" class="form-control" aria-label="Default select example" id="elastic-table">
                     {% for elastic_ in config_variables_elastics %}
                         {% if elastic == elastic_.elastic_table_name %}
-                             <option value={{ elastic_.elastic_table_name }} selected>{{ elastic_.visible_name }}</option>
+                            <option value={{ elastic_.elastic_table_name }} selected>{{ elastic_.visible_name }}</option>
                         {% else %}
                             <option value={{ elastic_.elastic_table_name }}>{{ elastic_.visible_name }}</option>
                         {% endif %}
@@ -53,7 +53,7 @@
                 <select name="model_type" class="form-control" aria-label="Default select example" id="model_type-table">
                     {% for model_ in config_variables_models %}
                         {% if model_type == model_.model %}
-                             <option value={{ model_.model }} selected>{{ model_.visible_name }}</option>
+                            <option value={{ model_.model }} selected>{{ model_.visible_name }}</option>
                         {% else %}
                             <option value={{ model_.model }}>{{ model_.visible_name }}</option>
                         {% endif %}
