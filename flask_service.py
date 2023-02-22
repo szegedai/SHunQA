@@ -11,6 +11,8 @@ with open('config.json', 'r') as config:
     config_variables = json.load(config)
 
 all_models = dict()
+all_elastics = dict()
+
 for model in config_variables["models"]:
     all_models[model["model"]] = pipeline(model["pipeline"],
                                           tokenizer=model["tokenizer"],
@@ -18,6 +20,10 @@ for model in config_variables["models"]:
                                           device=model["device"],
                                           handle_impossible_answer=bool(model["handle_impossible_answer"]),
                                           max_answer_len=model["max_answer_len"])
+
+
+for elastic_table in config_variables["elastics"]:
+    all_elastics[elastic_table["elastic"]] = elastic_table["elastic_table_name"]
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
@@ -49,7 +55,7 @@ def predict_from_question(query, size, elastic, model_type):
         verify_certs=False
     )
 
-    s = es.search(index=elastic, body=body)
+    s = es.search(index=all_elastics[elastic], body=body)
 
     # The query only returns the text before the question mark, so we add it here.
     official_question = query if query[-1:] == '?' else query + '?'
@@ -96,15 +102,18 @@ def predict_from_question_gui():
                                data=predict_from_question(query, size, elastic, model_type),
                                query=query,
                                size=size,
-                               elastic=elastic,
+                               elastic=config_variables["elastics"],
+                               config_variables_elastics=config_variables["elastics"],
                                model_type=model_type,
-                               config_variables=config_variables["models"])
+                               config_variables_models=config_variables["models"])
 
     return render_template('index.html',
                            data=None,
                            query=None,
+                           elastic=config_variables["elastics"][0]["elastic_table_name"],
+                           config_variables_elastics=config_variables["elastics"],
                            model_type=config_variables["models"][0]["model"],
-                           config_variables=config_variables["models"])
+                           config_variables_models=config_variables["models"])
 
 
 @app.route('/qa/api/', methods=['GET', 'POST'])

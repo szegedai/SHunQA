@@ -44,6 +44,17 @@
       "max_answer_len" : 1000,
       "visible_name": "RoBERTa hosszú válaszos, nem megválaszolható modell"
     }
+  ],
+
+  "elastics": [
+    {
+      "elastic_table_name": "milqa_w_lemma_w_official_context",
+      "visible_name": "MILQA"
+    },
+    {
+      "elastic_table_name": "word_war_2_wikidump",
+      "visible_name": "WW2 WikiDump"
+    }
   ]
 }
 
