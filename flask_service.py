@@ -10,8 +10,6 @@ app.config['JSON_AS_ASCII'] = False
 with open('config.json', 'r') as config:
     config_variables = json.load(config)
 
-print("asuifhasiofhsduiorghsduioghsduopfiopghpdofhgpsodip")
-
 all_models = dict()
 for model in config_variables["models"]:
     all_models[model["model"]] = pipeline(model["pipeline"],
@@ -20,9 +18,6 @@ for model in config_variables["models"]:
                                           device=model["device"],
                                           handle_impossible_answer=bool(model["handle_impossible_answer"]),
                                           max_answer_len=model["max_answer_len"])
-
-print(all_models)
-print(all_models)
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
@@ -63,17 +58,12 @@ def predict_from_question(query, size, elastic, model_type):
     return_value = list()
     id = 0
 
-    print(all_models[model_type])
-
     for context_raw in contexts:
         lemmatized_context = context_raw["_source"]["document"]
         official_context = context_raw["_source"]["official_document"]
         elastic_score = context_raw["_score"]
 
         qa_pipeline = all_models[model_type]
-
-        print(qa_pipeline)
-
         prediction = qa_pipeline({
             'context': official_context,
             'question': official_question
