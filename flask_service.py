@@ -17,7 +17,7 @@ for model in config_variables["models"]:
                                                  tokenizer=model["tokenizer"],
                                                  model=model["model"],
                                                  device=model["device"],
-                                                 handle_impossible_answer=model["handle_impossible_answer"],
+                                                 handle_impossible_answer=bool(model["handle_impossible_answer"]),
                                                  max_answer_len=model["max_answer_len"])
 
 
