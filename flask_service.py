@@ -22,12 +22,13 @@ for model in config_variables["models"]:
                                                  handle_impossible_answer=bool(model["handle_impossible_answer"]),
                                                  max_answer_len=model["max_answer_len"])
 
+print(all_models)
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
 
 @app.route('/query/<query>')
-def predict_from_question(query, size, elastic, model_type):
+def predict_from_question(query, size, elastic, model_type=config_variables["models"][0]["visible_name"]):
     doc_q = nlp_hu(query)
     clean_tokens = list()
 
