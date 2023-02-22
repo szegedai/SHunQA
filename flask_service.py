@@ -23,7 +23,7 @@ for model in config_variables["models"]:
 
 
 for elastic_table in config_variables["elastics"]:
-    all_elastics[elastic_table["elastic"]] = elastic_table["elastic_table_name"]
+    all_elastics[elastic_table["elastic_table_name"]] = elastic_table["elastic_table_name"]
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
