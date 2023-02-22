@@ -1,98 +1,49 @@
 {
-  "hubert_sni_qa_pipeline" : [
-      {
-        "pipeline" : "question-answering"
-      },
-      {
-        "tokenizer" : "ZTamas/hubert-qa-milqa"
-      },
-      {
-        "model" : "ZTamas/hubert-qa-milqa"
-      }
-    ],
-
-  "hubert_si_qa_pipeline" : [
-    {
-      "pipeline" : "question-answering"
+  "models": [{
+      "pipeline" : "question-answering",
+      "tokenizer" : "ZTamas/hubert-qa-milqa",
+      "model" : "ZTamas/hubert-qa-milqa",
+      "device": "-1",
+      "handle_impossible_answer" : "False",
+      "max_answer_len" : "50",
+      "visible_name": "huBERT rövid válaszos modell"
     },
     {
-      "tokenizer": "ZTamas/hubert-qa-milqa-impossible"
+      "pipeline" : "question-answering",
+      "tokenizer": "ZTamas/hubert-qa-milqa-impossible",
+      "model" : "ZTamas/hubert-qa-milqa-impossible",
+      "device" : "-1",
+      "handle_impossible_answer" : "True",
+      "max_answer_len" : "50",
+      "visible_name": "huBERT rövid válaszos, nem megválaszolható modell"
     },
     {
-      "model" : "ZTamas/hubert-qa-milqa-impossible"
+      "pipeline" : "question-answering",
+      "tokenizer": "ZTamas/hubert-qa-milqa-impossible-long-answer",
+      "model" : "ZTamas/hubert-qa-milqa-impossible-long-answer",
+      "device" : "-1",
+      "handle_impossible_answer" : "True",
+      "max_answer_len" : "1000",
+      "visible_name": "huBERT hosszú válaszos, nem megválaszolható modell"
     },
     {
-      "device" : "-1"
+      "pipeline" : "question-answering",
+      "tokenizer": "ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible",
+      "model" : "ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible",
+      "device" : "-1",
+      "handle_impossible_answer" : "True",
+      "max_answer_len" : "50",
+      "visible_name": "RoBERTa rövid válaszos, nem megválaszolható modell"
     },
     {
-      "handle_impossible_answer" : "True"
-    },
-    {
-      "max_answer_len" : "50"
-    }
-  ],
-
-  "hubert_li_qa_pipeline" : [
-    {
-      "pipeline" : "question-answering"
-    },
-    {
-      "tokenizer": "ZTamas/hubert-qa-milqa-impossible-long-answer"
-    },
-    {
-      "model" : "ZTamas/hubert-qa-milqa-impossible-long-answer"
-    },
-    {
-      "device" : "-1"
-    },
-    {
-      "handle_impossible_answer" : "True"
-    },
-    {
-      "max_answer_len" : "1000"
-    }
-  ],
-
-  "roberta_si_qa_pipeline" : [
-    {
-      "pipeline" : "question-answering"
-    },
-    {
-      "tokenizer": "ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible"
-    },
-    {
-      "model" : "ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible"
-    },
-    {
-      "device" : "-1"
-    },
-    {
-      "handle_impossible_answer" : "True"
-    },
-    {
-      "max_answer_len" : "50"
-    }
-  ],
-
-  "roberta_li_qa_pipeline" : [
-    {
-      "pipeline" : "question-answering"
-    },
-    {
-      "tokenizer": "ZTamas/xlm-roberta-large-squad2_impossible_long_answer"
-    },
-    {
-      "model" : "ZTamas/xlm-roberta-large-squad2_impossible_long_answer"
-    },
-    {
-      "device" : "-1"
-    },
-    {
-      "handle_impossible_answer" : "True"
-    },
-    {
-      "max_answer_len" : "1000"
+      "pipeline" : "question-answering",
+      "tokenizer": "ZTamas/xlm-roberta-large-squad2_impossible_long_answer",
+      "model" : "ZTamas/xlm-roberta-large-squad2_impossible_long_answer",
+      "device" : "-1",
+      "handle_impossible_answer" : "True",
+      "max_answer_len" : "1000",
+      "visible_name": "RoBERTa hosszú válaszos, nem megválaszolható modell"
     }
   ]
-  }
+}
 

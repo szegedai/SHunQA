@@ -44,51 +44,61 @@
             <div class="col-lg-12">
                 <label for="model_type-table">Modell kiválasztás:</label>
                 <select name="model_type" class="form-control" aria-label="Default select example" id="model_type-table">
-                    {% if model_type == "hubert" %}
-                        <option value="hubert_sni" selected>huBERT-short-nonimpossible</option>
-                        <option value="hubert_si">huBERT-short-impossible</option>
-                        <option value="hubert_li">huBERT-long-impossible</option>
-                        <option value="roberta_si">RoBERTa-short-impossible</option>
-                        <option value="roberta_li">RoBERTa-long-impossible</option>
-                    {% else %}
-                        {% if model_type == "hubert-si" %}
-                            <option value="hubert_sni">huBERT-short-nonimpossible</option>
-                            <option value="hubert_si" selected>huBERT-short-impossible</option>
-                            <option value="hubert_li">huBERT-long-impossible</option>
-                            <option value="roberta_si">RoBERTa-short-impossible</option>
-                            <option value="roberta_li">RoBERTa-long-impossible</option>
+                    {% for model in config_variables %}
+                        {% if model_type == model.visible_name %}
+                             <option value={{ model.visible_name }} selected>{{ model.visible_name }}</option>
                         {% else %}
-                            {% if model_type == "hubert-li" %}
-                                <option value="hubert_sni">huBERT-short-nonimpossible</option>
-                                <option value="hubert_si">huBERT-short-impossible</option>
-                                <option value="hubert_li" selected>huBERT-long-impossible</option>
-                                <option value="roberta_si">RoBERTa-short-impossible</option>
-                                <option value="roberta_li">RoBERTa-long-impossible</option>
-                            {% else %}
-                                {% if model_type == "roberta-s" %}
-                                    <option value="hubert_sni">huBERT-short-nonimpossible</option>
-                                    <option value="hubert_si">huBERT-short-impossible</option>
-                                    <option value="hubert_li">huBERT-long-impossible</option>
-                                    <option value="roberta_si" selected>RoBERTa-short-impossible</option>
-                                    <option value="roberta_li">RoBERTa-long-impossible</option>
-                                {% else %}
-                                    {% if model_type == "roberta-l" %}
-                                        <option value="hubert_sni">huBERT-short-nonimpossible</option>
-                                        <option value="hubert_si">huBERT-short-impossible</option>
-                                        <option value="hubert_li">huBERT-long-impossible</option>
-                                        <option value="roberta_si">RoBERTa-short-impossible</option>
-                                        <option value="roberta_li" selected>RoBERTa-long-impossible</option>
-                                    {% else %}
-                                        <option value="hubert_sni" selected>huBERT-short-nonimpossible</option>
-                                        <option value="hubert_si">huBERT-short-impossible</option>
-                                        <option value="hubert_li">huBERT-long-impossible</option>
-                                        <option value="roberta_si">RoBERTa-short-impossible</option>
-                                        <option value="roberta_li">RoBERTa-long-impossible</option>
-                                    {% endif %}
-                                {% endif %}
-                            {% endif %}
+                            <option value={{ model.visible_name }}>{{ model.visible_name }}</option>
                         {% endif %}
-                    {% endif %}
+                    {% endfor %}
+
+
+
+{#                        <option value="huBERT rövid válaszos modell" selected>huBERT rövid válaszos modell</option>#}
+{#                        <option value="huBERT rövid válaszos, nem megválaszolható modell">huBERT rövid válaszos, nem megválaszolható modell</option>#}
+{#                        <option value="huBERT hosszú válaszos, nem megválaszolható modell">huBERT hosszú válaszos, nem megválaszolható modell</option>#}
+{#                        <option value="RoBERTa rövid válaszos, nem megválaszolható modell">RoBERTa rövid válaszos, nem megválaszolható modell</option>#}
+{#                        <option value="RoBERTa hosszú válaszos, nem megválaszolható modell">RoBERTa hosszú válaszos, nem megválaszolható modell</option>#}
+{#                        #}
+{#                    {% else %}#}
+{#                        {% if model_type == "huBERT rövid válaszos, nem megválaszolható modell" %}#}
+{#                            <option value="huBERT rövid válaszos modell">huBERT rövid válaszos modell</option>#}
+{#                            <option value="huBERT rövid válaszos, nem megválaszolható modell" selected>huBERT rövid válaszos, nem megválaszolható modell</option>#}
+{#                            <option value="huBERT hosszú válaszos, nem megválaszolható modell">huBERT hosszú válaszos, nem megválaszolható modell</option>#}
+{#                            <option value="RoBERTa rövid válaszos, nem megválaszolható modell">RoBERTa rövid válaszos, nem megválaszolható modell</option>#}
+{#                            <option value="RoBERTa hosszú válaszos, nem megválaszolható modell">RoBERTa hosszú válaszos, nem megválaszolható modell</option>#}
+{#                        {% else %}#}
+{#                            {% if model_type == "huBERT hosszú válaszos, nem megválaszolható modell" %}#}
+{#                                <option value="huBERT rövid válaszos modell">huBERT rövid válaszos modell</option>#}
+{#                                <option value="huBERT rövid válaszos, nem megválaszolható modell">huBERT rövid válaszos, nem megválaszolható modell</option>#}
+{#                                <option value="huBERT hosszú válaszos, nem megválaszolható modell" selected>huBERT hosszú válaszos, nem megválaszolható modell</option>#}
+{#                                <option value="RoBERTa rövid válaszos, nem megválaszolható modell">RoBERTa rövid válaszos, nem megválaszolható modell</option>#}
+{#                                <option value="RoBERTa hosszú válaszos, nem megválaszolható modell">RoBERTa hosszú válaszos, nem megválaszolható modell</option>#}
+{#                            {% else %}#}
+{#                                {% if model_type == "RoBERTa rövid válaszos, nem megválaszolható modell" %}#}
+{#                                    <option value="huBERT rövid válaszos modell">huBERT rövid válaszos modell</option>#}
+{#                                    <option value="huBERT rövid válaszos, nem megválaszolható modell">huBERT rövid válaszos, nem megválaszolható modell</option>#}
+{#                                    <option value="huBERT hosszú válaszos, nem megválaszolható modell">huBERT hosszú válaszos, nem megválaszolható modell</option>#}
+{#                                    <option value="RoBERTa rövid válaszos, nem megválaszolható modell" selected>RoBERTa rövid válaszos, nem megválaszolható modell</option>#}
+{#                                    <option value="RoBERTa hosszú válaszos, nem megválaszolható modell">RoBERTa hosszú válaszos, nem megválaszolható modell</option>#}
+{#                                {% else %}#}
+{#                                    {% if model_type == "RoBERTa hosszú válaszos, nem megválaszolható modell" %}#}
+{#                                        <option value="huBERT rövid válaszos modell">huBERT rövid válaszos modell</option>#}
+{#                                        <option value="huBERT rövid válaszos, nem megválaszolható modell">huBERT rövid válaszos, nem megválaszolható modell</option>#}
+{#                                        <option value="huBERT hosszú válaszos, nem megválaszolható modell">huBERT hosszú válaszos, nem megválaszolható modell</option>#}
+{#                                        <option value="RoBERTa rövid válaszos, nem megválaszolható modell">RoBERTa rövid válaszos, nem megválaszolható modell</option>#}
+{#                                        <option value="RoBERTa hosszú válaszos, nem megválaszolható modell" selected>RoBERTa hosszú válaszos, nem megválaszolható modell</option>#}
+{#                                    {% else %}#}
+{#                                        <option value="huBERT rövid válaszos modell" selected>huBERT rövid válaszos modell</option>#}
+{#                                        <option value="huBERT rövid válaszos, nem megválaszolható modell">huBERT rövid válaszos, nem megválaszolható modell</option>#}
+{#                                        <option value="huBERT hosszú válaszos, nem megválaszolható modell">huBERT hosszú válaszos, nem megválaszolható modell</option>#}
+{#                                        <option value="RoBERTa rövid válaszos, nem megválaszolható modell">RoBERTa rövid válaszos, nem megválaszolható modell</option>#}
+{#                                        <option value="RoBERTa hosszú válaszos, nem megválaszolható modell">RoBERTa hosszú válaszos, nem megválaszolható modell</option>#}
+{#                                    {% endif %}#}
+{#                                {% endif %}#}
+{#                            {% endif %}#}
+{#                        {% endif %}#}
+{#                    {% endif %}#}
                 </select>
             </div>
         </div>
