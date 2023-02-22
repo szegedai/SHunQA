@@ -44,11 +44,11 @@
             <div class="col-lg-12">
                 <label for="model_type-table">Modell kiválasztás:</label>
                 <select name="model_type" class="form-control" aria-label="Default select example" id="model_type-table">
-                    {% for model in config_variables %}
-                        {% if model_type == model.visible_name %}
-                             <option value={{ model.visible_name }} selected>{{ model.visible_name }}</option>
+                    {% for model_ in config_variables %}
+                        {% if model_type == model_.model %}
+                             <option value={{ model_.model }} selected>{{ model_.visible_name }}</option>
                         {% else %}
-                            <option value={{ model.visible_name }}>{{ model.visible_name }}</option>
+                            <option value={{ model_.model }}>{{ model_.visible_name }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>

@@ -10,25 +10,25 @@ app.config['JSON_AS_ASCII'] = False
 with open('config.json', 'r') as config:
     config_variables = json.load(config)
 
-
 print("asuifhasiofhsduiorghsduioghsduopfiopghpdofhgpsodip")
 
 all_models = dict()
 for model in config_variables["models"]:
-    all_models[model["visible_name"]] = pipeline(model["pipeline"],
-                                                 tokenizer=model["tokenizer"],
-                                                 model=model["model"],
-                                                 device=model["device"],
-                                                 handle_impossible_answer=bool(model["handle_impossible_answer"]),
-                                                 max_answer_len=model["max_answer_len"])
+    all_models[model["model"]] = pipeline(model["pipeline"],
+                                          tokenizer=model["tokenizer"],
+                                          model=model["model"],
+                                          device=model["device"],
+                                          handle_impossible_answer=bool(model["handle_impossible_answer"]),
+                                          max_answer_len=model["max_answer_len"])
 
+print(all_models)
 print(all_models)
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
 
 @app.route('/query/<query>')
-def predict_from_question(query, size, elastic, model_type=config_variables["models"][0]["visible_name"]):
+def predict_from_question(query, size, elastic, model_type):
     doc_q = nlp_hu(query)
     clean_tokens = list()
 
@@ -90,8 +90,6 @@ def predict_from_question(query, size, elastic, model_type=config_variables["mod
                              "id": id})
         id += 1
 
-
-
     return return_value
 
 
@@ -115,7 +113,7 @@ def predict_from_question_gui():
     return render_template('index.html',
                            data=None,
                            query=None,
-                           model_type=config_variables["models"][0]["visible_name"],
+                           model_type=config_variables["models"][0]["model"],
                            config_variables=config_variables["models"])
 
 
