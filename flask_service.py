@@ -11,6 +11,8 @@ with open('config.json', 'r') as config:
     config_variables = json.load(config)
 
 
+print("asuifhasiofhsduiorghsduioghsduopfiopghpdofhgpsodip")
+
 all_models = dict()
 for model in config_variables["models"]:
     all_models[model["visible_name"]] = pipeline(model["pipeline"],
