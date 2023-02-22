@@ -65,10 +65,11 @@ def predict_from_question(query, size, elastic, model_type):
         official_context = context_raw["_source"]["official_document"]
         elastic_score = context_raw["_score"]
 
+
         prediction = all_models[model_type]({
-                    'context': official_context,
-                    'question': official_question
-                })
+            'context': official_context,
+            'question': official_question
+        })
 
         return_value.append({"lemmatized_context": lemmatized_context,
                              "official_question": official_question,
@@ -80,6 +81,8 @@ def predict_from_question(query, size, elastic, model_type):
                              "elastic_score": elastic_score,
                              "id": id})
         id += 1
+
+    print(all_models[model_type])
 
     return return_value
 
