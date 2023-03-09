@@ -77,13 +77,16 @@
               <div>
                   Nem tudom a választ, sajnálom. :(
               </div>
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne{{line.id}}" aria-expanded="true" aria-controls="collapseOne">
+                  Részletek:
+              </button>
               {% endif %}
           </h5>
       </div>
 
       <div id="collapseOne{{line.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
         <div class="card-body">
-
+            {% if line.answer != "" %}
             <h5 class="card-title">Eredeti kontextus:</h5>
             <p class="card-text">{{line.official_context[:line.start] | safe}}<span style="background: #006fff2b; font-weight: bold; border-radius: 10px; padding: 4px">{{line.official_context[line.start:line.end] | safe}}</span>{{line.official_context[line.end:] | safe}}</p>
 
@@ -92,6 +95,16 @@
 
             <h5 class="card-title">Modell pontszám:</h5>
             <p class="card-text">{{line.model_score | safe}}</p>
+            {% else %}
+            <h5 class="card-title">Eredeti kontextus:</h5>
+            <p class="card-text">{{line.official_context | safe}}</p>
+
+            <h5 class="card-title">Elastic pontszám:</h5>
+            <p class="card-text">{{line.elastic_score | safe}}</p>
+
+            <h5 class="card-title">Modell pontszám:</h5>
+            <p class="card-text">{{line.model_score | safe}}</p>
+            {% endif %}
         </div>
       </div>
     </div>
