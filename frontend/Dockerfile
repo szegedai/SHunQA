@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN rm -r node_modules/
+RUN rm -rf node_modules/
 
 RUN npm install
 
