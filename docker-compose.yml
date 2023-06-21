@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    networks:
+      - shunqa-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3003:3000"
+    networks:
+      - shunqa-network
+
+  nginx:
+    image: nginx
+    ports:
+      - "25565:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - shunqa-network
+
+networks:
+  shunqa-network:
+
+volumes:
+  nginx-conf:
