@@ -3,6 +3,7 @@ from elasticsearch import Elasticsearch
 from transformers import pipeline, AutoTokenizer, AutoModelForQuestionAnswering
 import spacy
 import json
+import time
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -27,8 +28,11 @@ for elastic_table in config_variables["elastics"]:
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
+@app.route('/test')
+def test():
+    return jsonify({"Hello": "world!"}), 200
 
-@app.route('/query/<query>')
+# @app.route('/query/<query>')
 def predict_from_question(query, size, elastic, model_type):
     doc_q = nlp_hu(query)
     clean_tokens = list()
@@ -90,40 +94,45 @@ def predict_from_question(query, size, elastic, model_type):
 
 
 # @app.route('/qa/<query>')
-@app.route('/qa/', methods=['GET', 'POST'])
-def predict_from_question_gui():
-    if request.method == 'POST':
-        query = request.form["query"]
-        size = request.form["size"]
-        elastic = request.form["elastic"]
-        model_type = request.form["model_type"]
+# @app.route('/qa/', methods=['GET', 'POST'])
+# def predict_from_question_gui():
+#     if request.method == 'POST':
+#         query = request.form["query"]
+#         size = request.form["size"]
+#         elastic = request.form["elastic"]
+#         model_type = request.form["model_type"]
 
-        return render_template('index.html',
-                               data=predict_from_question(query, size, elastic, model_type),
-                               query=query,
-                               size=size,
-                               elastic=elastic,
-                               config_variables_elastics=config_variables["elastics"],
-                               model_type=model_type,
-                               config_variables_models=config_variables["models"])
+#         return render_template('index.html',
+#                                data=predict_from_question(query, size, elastic, model_type),
+#                                query=query,
+#                                size=size,
+#                                elastic=elastic,
+#                                config_variables_elastics=config_variables["elastics"],
+#                                model_type=model_type,
+#                                config_variables_models=config_variables["models"])
 
-    return render_template('index.html',
-                           data=None,
-                           query=None,
-                           elastic=config_variables["elastics"][0]["elastic_table_name"],
-                           config_variables_elastics=config_variables["elastics"],
-                           model_type=config_variables["models"][0]["model"],
-                           config_variables_models=config_variables["models"])
+#     return render_template('index.html',
+#                            data=None,
+#                            query=None,
+#                            elastic=config_variables["elastics"][0]["elastic_table_name"],
+#                            config_variables_elastics=config_variables["elastics"],
+#                            model_type=config_variables["models"][0]["model"],
+#                            config_variables_models=config_variables["models"])
 
 
-@app.route('/qa/api/', methods=['GET', 'POST'])
+@app.route('/qa', methods=['POST'])
 def rest_api():
     try:
         record = json.loads(request.data)
+        if (record["query"] == ""):
+            return jsonify({"answers": [], "system": record})
+
+        record["time"] = time.time()
         query = predict_from_question(record["query"], record["size"], record["elastic"], record["model_type"])
+        record["time"] = time.time() - record["time"]
 
         app.logger.info(record)
-        return jsonify(query)
+        return jsonify({"answers": query, "system": record})
     except:
         return jsonify({}), 418
 
