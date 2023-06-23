@@ -12,10 +12,11 @@ export default defineNuxtConfig({
     head: {
       title: "Projectroom41: SHunQA",
     },
+    // buildAssetsDir: "/demo_qa/_nuxt/",
   },
   runtimeConfig: {
     public: {
-      apiUrl: process.env.API_URL || "http://localhost/api",
+      apiUrl: process.env.API_URL || "http://localhost:25565/api",
     }
-  }
+  },
 });
