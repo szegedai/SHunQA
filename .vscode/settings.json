@@ -2,6 +2,7 @@
     "conventionalCommits.scopes": [
         "backend",
         "frontend",
-        "compose"
+        "compose",
+        "nginx"
     ]
 }
