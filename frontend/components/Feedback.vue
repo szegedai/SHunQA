@@ -19,6 +19,12 @@
                     <h4 class="mb-4 text-lg font-light text-gray-800">Leave a feedback!</h4>
                     <div class="space-y-4">
                         <div>
+                            <label for="what-should-be" class="block mb-2 text-sm font-medium text-gray-900">What should be
+                                the correct answer?</label>
+                            <textarea id="what-should-be" v-model="whatShouldBe"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                        </div>
+                        <div>
                             <label for="whats-wrong" class="block mb-2 text-sm font-medium text-gray-900">What is wrong with
                                 this answer?</label>
                             <textarea id="whats-wrong" v-model="whatsWrong"
@@ -29,6 +35,16 @@
                                 would you want to add to the feedback?</label>
                             <textarea id="anything-else" v-model="anythingElse"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                        </div>
+                        <div>
+                            <label for="was-this-in-the-context" class="block mb-2 text-sm font-medium text-gray-900">Was
+                                the correct answer in the context?</label>
+                            <select id="was-this-in-the-context" v-model="wasThisInTheContext"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                                <option value="not-sure">Not sure</option>
+                            </select>
                         </div>
                         <button @click="sendFeedback"
                             class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
@@ -63,30 +79,39 @@ const props = defineProps({
         size: Number,
         elastic: String,
         model_type: String,
+        time: Number
     },
     question: String,
     closeFeedback: Function
 })
 
+const whatShouldBe = ref('')
 const whatsWrong = ref('')
 const anythingElse = ref('')
+const wasThisInTheContext = ref('yes')
 const config = useRuntimeConfig().public
 
 const sendFeedback = async () => {
-    console.log('Feedback sent!', props.answer)
-    await useAsyncData('feedback', () => {
-        $fetch(`${config.apiUrl}/feedback`,
+    await useAsyncData('feedbackDislike', () => {
+        $fetch(`${config.apiUrl}/feedback/dislike`,
             {
                 method: 'POST',
                 body: {
                     "question": props.question,
                     "answer": props.answer,
                     "system": props.system,
+                    "what_should_be": whatShouldBe.value,
                     "whats_wrong": whatsWrong.value,
-                    "anything_else": anythingElse.value
+                    "anything_else": anythingElse.value,
+                    "was_this_in_the_context": wasThisInTheContext.value,
                 }
+            }).then((res) => {
+                props.closeFeedback()
+                useNuxtApp().$toast.success('Thank you for your feedback!')
+            }).catch((err) => {
+                props.closeFeedback()
+                useNuxtApp().$toast.error('Something went wrong with sending your feedback. Please try again later.')
             })
     })
-    props.closeFeedback()
 }
 </script>
