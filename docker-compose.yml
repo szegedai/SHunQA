@@ -14,6 +14,8 @@ services:
       - "3003:3000"
     networks:
       - shunqa-network
+    environment:
+      - NUXT_APP_CDN_URL=https://chatbot-rgai3.inf.u-szeged.hu/demo_qa
 
   nginx:
     image: nginx
