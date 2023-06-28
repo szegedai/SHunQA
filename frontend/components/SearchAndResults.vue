@@ -7,12 +7,12 @@
                 <option value="word_war_2_wikidump">word_war_2_wikidump</option>
             </select>
             <select v-model="settings.model_type" class="rounded-md border border-gray-300 p-1 bg-white">
-                <option value="ZTamas/hubert-qa-milqa">ZTamas/hubert-qa-milqa</option>
+                <!-- <option value="ZTamas/hubert-qa-milqa">ZTamas/hubert-qa-milqa</option>
                 <option value="ZTamas/hubert-qa-milqa-impossible">ZTamas/hubert-qa-milqa-impossible</option>
                 <option value="ZTamas/hubert-qa-milqa-impossible-long-answer">ZTamas/hubert-qa-milqa-impossible-long-answer
                 </option>
                 <option value="ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible">
-                    ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible</option>
+                    ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible</option> -->
                 <option value="ZTamas/xlm-roberta-large-squad2_impossible_long_answer">
                     ZTamas/xlm-roberta-large-squad2_impossible_long_answer</option>
             </select>
@@ -35,7 +35,7 @@ const question = ref("")
 const settings = ref({
     size: 1,
     elastic: "milqa_w_lemma_w_official_context",
-    model_type: "ZTamas/hubert-qa-milqa"
+    model_type: "ZTamas/xlm-roberta-large-squad2_impossible_long_answer"
 })
 const config = useRuntimeConfig().public
 
