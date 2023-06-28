@@ -146,7 +146,9 @@ def rest_api():
         record["id"] = str(db["qa"].insert_one({"answers": query, "system": record}).inserted_id)
 
         return jsonify({"answers": query, "system": record})
-    except:
+    except Exception as e:
+        app.logger.error(e)
+        db["qa_errors"].insert_one({"error": str(e)})
         return jsonify({}), 418
 
 
@@ -156,7 +158,9 @@ def feedback_like():
         record = json.loads(request.data)
         db["likes"].insert_one({"id": record["id"], "time": time.time()})
         return jsonify({}), 200
-    except:
+    except Exception as e:
+        app.logger.error(e)
+        db["likes_errors"].insert_one({"error": str(e)})
         return jsonify({}), 400
 
 
@@ -173,7 +177,9 @@ def feedback_dislike():
             "time": time.time()
             })
         return jsonify({}), 200
-    except:
+    except Exception as e:
+        app.logger.error(e)
+        db["dislikes_errors"].insert_one({"error": str(e)})
         return jsonify({}), 400
 
 
