@@ -142,6 +142,33 @@ def rest_api():
         return jsonify({}), 418
 
 
+@app.route('/feedback/like', methods=['POST'])
+def feedback_like():
+    try:
+        record = json.loads(request.data)
+        db["likes"].insert_one({"id": record["id"], "time": time.time()})
+        return jsonify({}), 200
+    except:
+        return jsonify({}), 400
+
+
+@app.route('/feedback/dislike', methods=['POST'])
+def feedback_dislike():
+    try:
+        record = json.loads(request.data)
+        db["dislikes"].insert_one({
+            "id": record["id"], 
+            "what_should_be": record["what_should_be"],
+            "whats_wrong": record["whats_wrong"],
+            "anything_else": record["anything_else"],
+            "was_this_in_the_context": record["was_this_in_the_context"],
+            "time": time.time()
+            })
+        return jsonify({}), 200
+    except:
+        return jsonify({}), 400
+
+
 # curl -X POST https://chatbot-rgai3.inf.u-szeged.hu/qa/api/ -H 'Content-Type: application/json' -d @./rest_api_example_files/data.json
 
 
