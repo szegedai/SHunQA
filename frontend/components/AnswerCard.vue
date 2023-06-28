@@ -29,13 +29,13 @@
         <div v-if="open" class="text-slate-900 mb-3 flex flex-col space-y-2">
             <h2 class="text-gray-500">Context</h2>
             <p class="text-justify">
-                {{ answer.official_context.slice(0, answer.start) }}
+                {{ answer.relevant_context.slice(0, answer.start) }}
                 <span class="before:block before:absolute before:-inset-0.5 before:bg-slate-400 relative inline-block">
                     <span class="relative text-white font-medium">
-                        {{ answer.official_context.slice(answer.start, answer.end) }}
+                        {{ answer.relevant_context.slice(answer.start, answer.end) }}
                     </span>
                 </span>
-                {{ answer.official_context.slice(answer.end, -1) }}
+                {{ answer.relevant_context.slice(answer.end, -1) }}
             </p>
 
             <!-- 
