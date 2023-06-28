@@ -79,7 +79,8 @@ const props = defineProps({
         size: Number,
         elastic: String,
         model_type: String,
-        time: Number
+        time: Number,
+        id: String,
     },
     question: String,
     closeFeedback: Function
@@ -97,9 +98,7 @@ const sendFeedback = async () => {
             {
                 method: 'POST',
                 body: {
-                    "question": props.question,
-                    "answer": props.answer,
-                    "system": props.system,
+                    "id": props.system.id,
                     "what_should_be": whatShouldBe.value,
                     "whats_wrong": whatsWrong.value,
                     "anything_else": anythingElse.value,
