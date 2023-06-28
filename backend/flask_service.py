@@ -4,6 +4,8 @@ from transformers import pipeline, AutoTokenizer, AutoModelForQuestionAnswering
 import spacy
 import json
 import time
+from pymongo import MongoClient
+import os
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -27,6 +29,8 @@ for elastic_table in config_variables["elastics"]:
     all_elastics[elastic_table["elastic_table_name"]] = elastic_table["elastic_table_name"]
 
 nlp_hu = spacy.load("hu_core_news_trf")
+
+MONGO_URL = os.environ.get('MONGO_URL')
 
 @app.route('/test')
 def test():
@@ -131,7 +135,8 @@ def rest_api():
         query = predict_from_question(record["query"], record["size"], record["elastic"], record["model_type"])
         record["time"] = time.time() - record["time"]
 
-        app.logger.info(record)
+        record["id"] = str(db["qa"].insert_one({"answers": query, "system": record}).inserted_id)
+
         return jsonify({"answers": query, "system": record})
     except:
         return jsonify({}), 418
@@ -141,4 +146,6 @@ def rest_api():
 
 
 if __name__ == '__main__':
+    client = MongoClient(MONGO_URL)
+    db = client["shunqa"]
     app.run(host='0.0.0.0', port=5000)

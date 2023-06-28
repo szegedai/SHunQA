@@ -7,3 +7,5 @@ spacy @ https://files.pythonhosted.org/packages/0a/99/e5d68754b79d24e1ab0f8aa527
 hu-core-news-trf @ https://huggingface.co/huspacy/hu_core_news_trf/resolve/main/hu_core_news_trf-any-py3-none-any.whl
 sentencepiece==0.1.97
 protobuf==3.20.0
+dnspython==2.3.0
+pymongo==4.4.0
