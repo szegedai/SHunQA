@@ -139,16 +139,17 @@ def rest_api():
         if (record["query"] == ""):
             return jsonify({"answers": [], "system": record})
 
-        record["time"] = time.time()
+        record["elapsed_time"] = time.time()
         query = predict_from_question(record["query"], record["size"], record["elastic"], record["model_type"])
-        record["time"] = time.time() - record["time"]
+        record["elapsed_time"] = time.time() - record["elapsed_time"]
 
+        record["time"] = time.time()
         record["id"] = str(db["qa"].insert_one({"answers": query, "system": record}).inserted_id)
 
         return jsonify({"answers": query, "system": record})
     except Exception as e:
         app.logger.error(e)
-        db["qa_errors"].insert_one({"error": str(e)})
+        db["errors"].insert_one({"error": str(e), "time": time.time(), "type": "qa"})
         return jsonify({}), 418
 
 
@@ -160,7 +161,7 @@ def feedback_like():
         return jsonify({}), 200
     except Exception as e:
         app.logger.error(e)
-        db["likes_errors"].insert_one({"error": str(e)})
+        db["errors"].insert_one({"error": str(e), "time": time.time(), "type": "like"})
         return jsonify({}), 400
 
 
@@ -179,7 +180,7 @@ def feedback_dislike():
         return jsonify({}), 200
     except Exception as e:
         app.logger.error(e)
-        db["dislikes_errors"].insert_one({"error": str(e)})
+        db["errors"].insert_one({"error": str(e), "time": time.time(), "type": "dislike"})
         return jsonify({}), 400
 
 
