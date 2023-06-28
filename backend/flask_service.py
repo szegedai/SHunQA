@@ -67,28 +67,36 @@ def predict_from_question(query, size, elastic, model_type):
     contexts = list(s['hits']['hits'])
     return_value = list()
     id = 0
+    
+    official_all_context = "\n-\n\n".join(context["_source"]["official_document"] for context in contexts)
+    lemmatized_all_context = "\n-\n\n".join(context["_source"]["document"] for context in contexts)
 
+    qa_pipeline = all_models[model_type]
+    prediction = qa_pipeline({
+        'context': official_all_context,
+        'question': official_question
+    })
+    
+    model_answer = prediction["answer"]
+    
+    relevant_context = ""
+    elastic_score = 0
     for context_raw in contexts:
-        lemmatized_context = context_raw["_source"]["document"]
-        official_context = context_raw["_source"]["official_document"]
-        elastic_score = context_raw["_score"]
+        if context_raw["_source"]["official_document"].__contains__(model_answer):
+            relevant_context = context_raw["_source"]["official_document"]
+            elastic_score = context_raw["_score"]
+            break
 
-        qa_pipeline = all_models[model_type]
-        prediction = qa_pipeline({
-            'context': official_context,
-            'question': official_question
-        })
-
-        return_value.append({"lemmatized_context": lemmatized_context,
-                             "official_question": official_question,
-                             "official_context": official_context,
-                             "answer": prediction['answer'],
-                             "start": prediction['start'],
-                             "end": prediction['end'],
-                             "model_score": prediction['score'],
-                             "elastic_score": elastic_score,
-                             "id": id})
-        id += 1
+    return_value.append({"lemmatized_context": lemmatized_all_context,
+                            "official_question": official_question,
+                            "official_context": official_all_context,
+                            "relevant_context": relevant_context,
+                            "answer": prediction['answer'],
+                            "start": prediction['start'],
+                            "end": prediction['end'],
+                            "model_score": prediction['score'],
+                            "elastic_score": elastic_score,
+                            "id": id})
 
     return return_value
 
