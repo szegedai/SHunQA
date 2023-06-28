@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="open" class="rounded-md bg-slate-200 my-4 p-4 border border-gray-300 flex flex-col space-y-2">
-            <input type="number" v-model="settings.size" class="w-16 rounded-md border border-gray-300 p-1" />
+            <input type="number" min="1" max="3" v-model="settings.size" class="w-16 rounded-md border border-gray-300 p-1" />
             <select v-model="settings.elastic" class="rounded-md border border-gray-300 p-1 bg-white">
                 <option value="milqa_w_lemma_w_official_context">milqa_w_lemma_w_official_context</option>
                 <option value="word_war_2_wikidump">word_war_2_wikidump</option>
