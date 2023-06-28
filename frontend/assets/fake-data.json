@@ -1,0 +1,74 @@
+{
+  "qa": [
+    {
+      "answers": [
+        {
+          "answer": "A 20. században",
+          "elastic_score": 26.472752,
+          "end": 15,
+          "id": 0,
+          "lemmatized_context": "a 20. század a folyam felső szakasz vízlépcső sor épít ki, ami megváltoztat a folyó természetes vízjárás és gyakorlati megszüntet a hordalék alpi utánpótlás. a rendszer utolsó tag a Szlovákia felépített bősi vízlépcső. a Dunakanyar fölötti szakasz vízszint folyamatos csökken, ez következtében pusztul a part menti élőhely. a nagy veszély a Duna–Ipoly Nemzeti Park ártéri keményfaliget fenyeget.\na Duna a világ „ nemzetközi ” folyó 10 ország halad át, vízgyűjtő terület pedig 7 további ország érint. több jelentős település is emelkedik a part, közte négy jelenlegi főváros: Bécs, Pozsony, Budapest és Belgrád. a térség kulturális örökség és természeti adottság sok turista vonz.",
+          "model_score": 0.9982025623321533,
+          "official_context": "A 20. században a folyam felső szakaszán vízlépcsők sorát építették ki, ami megváltoztatta a folyó természetes vízjárását és gyakorlatilag megszüntette a hordalék alpi utánpótlását. A rendszer utolsó tagja a Szlovákiában felépített bősi vízlépcső. A Dunakanyar fölötti szakasz vízszintje folyamatosan csökken, ennek következtében pusztulnak a part menti élőhelyek. A legnagyobb veszély a Duna–Ipoly Nemzeti Park ártéri keményfaligeteit fenyegeti.\nA Duna a világ „legnemzetközibb” folyója 10 országon halad át, vízgyűjtő területe pedig 7 további országot érint. Több jelentős település is emelkedik a partjain, köztük négy jelenlegi főváros: Bécs, Pozsony, Budapest és Belgrád. A térség kulturális öröksége és természeti adottságai sok turistát vonzanak.\n",
+          "official_question": "Mikor építették a vízlépcsőket a Duna felső szakaszán?",
+          "start": 0,
+          "metadata": [
+            {
+              "section": "Duna",
+              "source": "https://hu.wikipedia.org/wiki/Duna",
+              "filename": "duna.md"
+            },
+            {
+              "section": "Tisza",
+              "source": "https://hu.wikipedia.org/wiki/Tisza",
+              "filename": "tisza.md"
+            }
+          ]
+        }
+      ],
+      "system": {
+        "query": "Mikor építették a vízlépcsőket a Duna felső szakaszán?",
+        "size": 1,
+        "elastic": "milqa_w_lemma_w_official_context",
+        "model_type": "ZTamas/hubert-qa-milqa"
+      }
+    }
+  ],
+  "feedback": [
+    {
+      "question": "Mikor építették a vízlépcsőket a Duna felső szakaszán?",
+      "answer": {
+        "answer": "A 20. században",
+        "elastic_score": 26.472752,
+        "end": 15,
+        "id": 0,
+        "lemmatized_context": "a 20. század a folyam felső szakasz vízlépcső sor épít ki, ami megváltoztat a folyó természetes vízjárás és gyakorlati megszüntet a hordalék alpi utánpótlás. a rendszer utolsó tag a Szlovákia felépített bősi vízlépcső. a Dunakanyar fölötti szakasz vízszint folyamatos csökken, ez következtében pusztul a part menti élőhely. a nagy veszély a Duna–Ipoly Nemzeti Park ártéri keményfaliget fenyeget.\na Duna a világ „ nemzetközi ” folyó 10 ország halad át, vízgyűjtő terület pedig 7 további ország érint. több jelentős település is emelkedik a part, közte négy jelenlegi főváros: Bécs, Pozsony, Budapest és Belgrád. a térség kulturális örökség és természeti adottság sok turista vonz.",
+        "model_score": 0.9982025623321533,
+        "official_context": "A 20. században a folyam felső szakaszán vízlépcsők sorát építették ki, ami megváltoztatta a folyó természetes vízjárását és gyakorlatilag megszüntette a hordalék alpi utánpótlását. A rendszer utolsó tagja a Szlovákiában felépített bősi vízlépcső. A Dunakanyar fölötti szakasz vízszintje folyamatosan csökken, ennek következtében pusztulnak a part menti élőhelyek. A legnagyobb veszély a Duna–Ipoly Nemzeti Park ártéri keményfaligeteit fenyegeti.\nA Duna a világ „legnemzetközibb” folyója 10 országon halad át, vízgyűjtő területe pedig 7 további országot érint. Több jelentős település is emelkedik a partjain, köztük négy jelenlegi főváros: Bécs, Pozsony, Budapest és Belgrád. A térség kulturális öröksége és természeti adottságai sok turistát vonzanak.\n",
+        "official_question": "Mikor építették a vízlépcsőket a Duna felső szakaszán?",
+        "start": 0,
+        "metadata": [
+          {
+            "section": "Duna",
+            "source": "https://hu.wikipedia.org/wiki/Duna",
+            "filename": "duna.md"
+          },
+          {
+            "section": "Tisza",
+            "source": "https://hu.wikipedia.org/wiki/Tisza",
+            "filename": "tisza.md"
+          }
+        ]
+      },
+      "system": {
+        "query": "Mikor építették a vízlépcsőket a Duna felső szakaszán?",
+        "size": 1,
+        "elastic": "milqa_w_lemma_w_official_context",
+        "model_type": "ZTamas/hubert-qa-milqa"
+      },
+      "whats_wrong": "Test",
+      "anything_else": "Test",
+      "id": 1
+    }
+  ]
+}
