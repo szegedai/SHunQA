@@ -10,7 +10,10 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URL=mongodb://user:pass@mongo
+      MONGO_URL: ${MONGO_URL}
+      ELASTIC_URL: ${ELASTIC_URL}
+      ELASTIC_USER: ${ELASTIC_USER}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
 
   frontend:
     build: ./frontend
@@ -19,7 +22,7 @@ services:
     networks:
       - shunqa-network
     environment:
-      - NUXT_APP_CDN_URL=https://chatbot-rgai3.inf.u-szeged.hu/demo_qa
+      NUXT_APP_CDN_URL: ${NUXT_APP_CDN_URL}
 
   nginx:
     image: nginx
@@ -41,8 +44,8 @@ services:
         bind:
           create_host_path: true
     environment:
-      - MONGODB_INITDB_ROOT_USERNAME=user
-      - MONGODB_INITDB_ROOT_PASSWORD=pass
+      MONGODB_INITDB_ROOT_USERNAME: ${MONGODB_INITDB_ROOT_USERNAME}
+      MONGODB_INITDB_ROOT_PASSWORD: ${MONGODB_INITDB_ROOT_PASSWORD}
 
 networks:
   shunqa-network:
