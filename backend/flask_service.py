@@ -31,6 +31,9 @@ for elastic_table in config_variables["elastics"]:
 nlp_hu = spacy.load("hu_core_news_trf")
 
 MONGO_URL = os.environ.get('MONGO_URL')
+ELASTIC_URL = os.environ.get('ELASTIC_URL')
+ELASTIC_USER = os.environ.get('ELASTIC_USER')
+ELASTIC_PASSWORD = os.environ.get('ELASTIC_PASSWORD')
 
 @app.route('/test')
 def test():
@@ -58,8 +61,8 @@ def predict_from_question(query, size, elastic, model_type):
     }
 
     es = Elasticsearch(
-        "http://rgai3.inf.u-szeged.hu:3427/",  # localhostra átírni tesztelésre
-        http_auth=("elastic", "V7uek_ey6EdQbGBz_XHX"),
+        ELASTIC_URL,
+        http_auth=(ELASTIC_USER, ELASTIC_PASSWORD),
         verify_certs=False
     )
 
@@ -103,33 +106,6 @@ def predict_from_question(query, size, elastic, model_type):
                             "id": id})
 
     return return_value
-
-
-# @app.route('/qa/<query>')
-# @app.route('/qa/', methods=['GET', 'POST'])
-# def predict_from_question_gui():
-#     if request.method == 'POST':
-#         query = request.form["query"]
-#         size = request.form["size"]
-#         elastic = request.form["elastic"]
-#         model_type = request.form["model_type"]
-
-#         return render_template('index.html',
-#                                data=predict_from_question(query, size, elastic, model_type),
-#                                query=query,
-#                                size=size,
-#                                elastic=elastic,
-#                                config_variables_elastics=config_variables["elastics"],
-#                                model_type=model_type,
-#                                config_variables_models=config_variables["models"])
-
-#     return render_template('index.html',
-#                            data=None,
-#                            query=None,
-#                            elastic=config_variables["elastics"][0]["elastic_table_name"],
-#                            config_variables_elastics=config_variables["elastics"],
-#                            model_type=config_variables["models"][0]["model"],
-#                            config_variables_models=config_variables["models"])
 
 
 @app.route('/qa', methods=['POST'])
@@ -182,9 +158,6 @@ def feedback_dislike():
         app.logger.error(e)
         db["errors"].insert_one({"error": str(e), "time": time.time(), "type": "dislike"})
         return jsonify({}), 400
-
-
-# curl -X POST https://chatbot-rgai3.inf.u-szeged.hu/qa/api/ -H 'Content-Type: application/json' -d @./rest_api_example_files/data.json
 
 
 if __name__ == '__main__':
