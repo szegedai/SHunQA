@@ -38,11 +38,7 @@ services:
     networks:
       - shunqa-network
     volumes:
-      - type: bind
-        source: ./data
-        target: /data/db
-        bind:
-          create_host_path: true
+      - mongodb-data:/data/db
     environment:
       MONGODB_INITDB_ROOT_USERNAME: ${MONGODB_INITDB_ROOT_USERNAME}
       MONGODB_INITDB_ROOT_PASSWORD: ${MONGODB_INITDB_ROOT_PASSWORD}
@@ -52,3 +48,4 @@ networks:
 
 volumes:
   nginx-conf:
+  mongodb-data:
