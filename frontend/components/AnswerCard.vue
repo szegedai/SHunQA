@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="flex flex-row space-x-2 justify-end">
-            <div class="hover:rotate-180 transition duration-300"
+            <div class="hover:rotate-180 transition duration-300" v-if="config.debug"
                 :title="'Model score: ' + answer.model_score + '\nElastic score: ' + answer.elastic_score">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6 text-lime-600">

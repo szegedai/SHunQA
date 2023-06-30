@@ -7,7 +7,7 @@
           Projectroom<span class="text-lime-600">41</span>: <span class="font-medium">SHunQA</span>
         </h1>
       </span>
-      <div class="cursor-pointer" @click="settingsOpen = !settingsOpen" title="Debug Settings">
+      <div class="cursor-pointer" @click="settingsOpen = !settingsOpen" title="Debug Settings" v-if="config.debug">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
           class="w-6 h-6 text-lime-600 hover:rotate-45 transition duration-300">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -25,6 +25,7 @@
 
 <script setup>
 const settingsOpen = ref(false);
+const config = useRuntimeConfig().public
 </script>
 
 <style>
