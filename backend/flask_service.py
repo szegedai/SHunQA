@@ -74,7 +74,6 @@ def predict_from_question(query, size, elastic, model_type):
     # We use the highest ranked document by the elasticsearch.
     contexts = list(s['hits']['hits'])
     return_value = list()
-    id = 0
     
     official_all_context = "\n-\n\n".join(context["_source"]["official_document"] for context in contexts)
     lemmatized_all_context = "\n-\n\n".join(context["_source"]["document"] for context in contexts)
@@ -103,8 +102,8 @@ def predict_from_question(query, size, elastic, model_type):
                             "start": prediction['start'],
                             "end": prediction['end'],
                             "model_score": prediction['score'],
-                            "elastic_score": elastic_score,
-                            "id": id})
+                            "elastic_score": elastic_score
+                            })
 
     return return_value
 
@@ -121,9 +120,18 @@ def rest_api():
         record["elapsed_time"] = time.time() - record["elapsed_time"]
 
         record["time"] = time.time()
-        record["id"] = str(db["qa"].insert_one({"answers": query, "system": record}).inserted_id)
+        mongo_id = str(db["qa"].insert_one({"answers": query, "system": record}).inserted_id)
 
-        return jsonify({"answers": query, "system": record})
+        if (not DEBUG):
+            for answer in query:
+                for key in answer.keys():
+                    del answer["lemmatized_context"]
+                    del answer["official_question"]
+                    del answer["official_context"]
+                    del answer["model_score"]
+                    del answer["elastic_score"]
+
+        return jsonify({"answers": query, "system": {"id": mongo_id}})
     except Exception as e:
         app.logger.error(e)
         db["errors"].insert_one({"error": str(e), "time": time.time(), "type": "qa"})
