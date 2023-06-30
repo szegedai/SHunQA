@@ -14,6 +14,7 @@ services:
       ELASTIC_URL: ${ELASTIC_URL}
       ELASTIC_USER: ${ELASTIC_USER}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      DEBUG: ${DEBUG}
 
   frontend:
     build: ./frontend
@@ -23,6 +24,7 @@ services:
       - shunqa-network
     environment:
       NUXT_APP_CDN_URL: ${NUXT_APP_CDN_URL}
+      DEBUG: ${DEBUG}
 
   nginx:
     image: nginx
