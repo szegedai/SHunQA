@@ -34,6 +34,7 @@ MONGO_URL = os.environ.get('MONGO_URL')
 ELASTIC_URL = os.environ.get('ELASTIC_URL')
 ELASTIC_USER = os.environ.get('ELASTIC_USER')
 ELASTIC_PASSWORD = os.environ.get('ELASTIC_PASSWORD')
+DEBUG = os.environ.get('DEBUG', '').lower() == 'true'
 
 @app.route('/test')
 def test():
