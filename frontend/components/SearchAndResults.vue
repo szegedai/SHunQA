@@ -34,7 +34,7 @@ defineProps({
 
 const question = ref("")
 const settings = ref({
-    size: 1,
+    size: 3,
     elastic: "milqa_w_lemma_w_official_context",
     model_type: "ZTamas/xlm-roberta-large-squad2_impossible_long_answer"
 })
