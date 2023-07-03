@@ -3,7 +3,7 @@
         <input
             class="placeholder:italic placeholder:text-slate-400 block bg-white hover:bg-gray-50 transition duration-300 w-full border border-slate-300 rounded-md py-2 pl-3 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
             placeholder="What is your question?" v-model="query" @input="$emit('update:query', $event.target.value)"
-            type="text">
+            type="text" @keyup.enter="askQuestion()">
         <div
             class="border rounded-md border-slate-300 bg-white p-1 w-11 h-11 focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 hover:bg-gray-50 transition duration-300">
             <button v-if="!pending && !error" @click="askQuestion()" class="w-9 h-9">

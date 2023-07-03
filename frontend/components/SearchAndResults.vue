@@ -19,7 +19,8 @@
         </div>
 
         <pre class="mb-2 italic">Mikor építették a vízlépcsőket a Duna felső szakaszán?</pre>
-        <SearchBar v-model:query="question" :pending="pending" :ask-question="askQuestion" :error="error" />
+        <SearchBar v-model:query="question" :pending="pending" :ask-question="askQuestion" :error="error" class="mb-4"/>
+        <AskQuestion v-if="Object.keys(answers.system) == 0" />
         <p v-if="!pending && answers" v-for="answer in answers.answers">
             <AnswerCard :answer="answer" :question="question" :system="answers.system" />
         </p>

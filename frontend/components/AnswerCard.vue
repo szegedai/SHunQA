@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-md bg-slate-100 mt-4 p-6 border border-gray-300 hover:bg-slate-200/60 transition duration-300">
+    <div class="rounded-md bg-slate-100 p-6 border border-gray-300 hover:bg-slate-200/60 transition duration-300" v-if="answer.relevant_context">
         <div>
             <p class="text-xl font-medium">Lorem ipsum</p>
             <p class="text-">2. Dolor sit > 3. Amet, consectetur</p>
@@ -35,7 +35,7 @@
             <h2 class="text-gray-500">Context</h2>
             <p class="text-justify">
                 {{ answer.relevant_context.slice(0, answer.start) }}
-                <span class="before:block before:absolute before:-inset-0.5 before:bg-slate-400 relative inline-block">
+                <span class="before:block before:absolute before:-inset-0.5 before:bg-slate-400 relative inline-block" v-if="answer.end != 0">
                     <span class="relative text-white font-medium">
                         {{ answer.relevant_context.slice(answer.start, answer.end) }}
                     </span>
@@ -83,6 +83,7 @@
             </div>
         </div>
     </div>
+    <NoAnswer v-if="!answer.relevant_context" />
     <Feedback v-if="feedback" :answer="answer" :question="question" :system="system" :close-feedback="toggleOpen" />
 </template>
 
