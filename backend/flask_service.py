@@ -80,9 +80,13 @@ def predict_from_question(query, size, elastic, model_type):
     )
 
     qa_pipeline = all_models[model_type]
-    prediction = qa_pipeline(
-        {"context": official_all_context, "question": official_question}
-    )
+    
+    if (official_all_context != ""):
+        prediction = qa_pipeline(
+            {"context": official_all_context, "question": official_question}
+        )
+    else:
+        prediction = {"answer": "", "start": 0, "end": 0, "score": -1}
 
     model_answer = prediction["answer"]
 
@@ -116,7 +120,7 @@ def rest_api():
     try:
         record = json.loads(request.data)
         if record["query"] == "":
-            return jsonify({"answers": [], "system": record})
+            return jsonify({"answers": [], "system": {}})
 
         record["elapsed_time"] = time.time()
         query = predict_from_question(
