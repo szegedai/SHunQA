@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.API_URL || "https://chatbot-rgai3.inf.u-szeged.hu/demo_qa/api",
       debug: process.env.DEBUG === 'true' || false,
+      elasticTables: process.env.FRONTEND_ELASTIC_TABLES?.split(',') || [],
     }
   },
 });

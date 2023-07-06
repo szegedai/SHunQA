@@ -3,8 +3,7 @@
         <div v-if="open" class="rounded-md bg-slate-200 my-4 p-4 border border-gray-300 flex flex-col space-y-2">
             <input type="number" min="1" max="3" v-model="settings.size" class="w-16 rounded-md border border-gray-300 p-1" />
             <select v-model="settings.elastic" class="rounded-md border border-gray-300 p-1 bg-white">
-                <option value="milqa_w_lemma_w_official_context">milqa_w_lemma_w_official_context</option>
-                <option value="word_war_2_wikidump">word_war_2_wikidump</option>
+                <option v-for="table in elasticTables" :value="table">{{ table }}</option>
             </select>
             <select v-model="settings.model_type" class="rounded-md border border-gray-300 p-1 bg-white">
                 <!-- <option value="ZTamas/hubert-qa-milqa">ZTamas/hubert-qa-milqa</option>
@@ -19,6 +18,7 @@
         </div>
 
         <pre class="mb-2 italic">Mikor építették a vízlépcsőket a Duna felső szakaszán?</pre>
+        <pre class="mb-2 italic">Mennyi szabadságot kapok örökbefogadás esetén?</pre>
         <SearchBar v-model:query="question" :pending="pending" :ask-question="askQuestion" :error="error" class="mb-4"/>
         <AskQuestion v-if="Object.keys(answers.system) == 0" />
         <p v-if="!pending && answers" v-for="answer in answers.answers">
@@ -32,13 +32,14 @@ defineProps({
     open: Boolean
 })
 
+const config = useRuntimeConfig().public
+const elasticTables = config.elasticTables
 const question = ref("")
 const settings = ref({
     size: 3,
-    elastic: "milqa_w_lemma_w_official_context",
+    elastic: elasticTables[0],
     model_type: "ZTamas/xlm-roberta-large-squad2_impossible_long_answer"
 })
-const config = useRuntimeConfig().public
 
 const {
     data: answers,
