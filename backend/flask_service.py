@@ -79,9 +79,11 @@ def predict_from_question(query, size, elastic, model_type):
         context["_source"]["document"] for context in contexts
     )
 
+    app.logger.info(contexts)
+
     qa_pipeline = all_models[model_type]
-    
-    if (official_all_context != ""):
+
+    if official_all_context != "":
         prediction = qa_pipeline(
             {"context": official_all_context, "question": official_question}
         )
@@ -92,10 +94,15 @@ def predict_from_question(query, size, elastic, model_type):
 
     relevant_context = ""
     elastic_score = 0
+    file_name, h1, h2, h3 = "", "", "", ""
     for context_raw in contexts:
         if context_raw["_source"]["official_document"].__contains__(model_answer):
             relevant_context = context_raw["_source"]["official_document"]
             elastic_score = context_raw["_score"]
+            file_name = context_raw["_source"]["file_name"]
+            h1 = context_raw["_source"]["h1"]
+            h2 = context_raw["_source"]["h2"]
+            h3 = context_raw["_source"]["h3"]
             break
 
     return_value.append(
@@ -109,6 +116,9 @@ def predict_from_question(query, size, elastic, model_type):
             "end": prediction["end"],
             "model_score": prediction["score"],
             "elastic_score": elastic_score,
+            "metadata": [
+                {"section": h2 + " > " + h3, "filename": file_name, "source": h1}
+            ]
         }
     )
 
