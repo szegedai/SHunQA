@@ -1,8 +1,8 @@
 <template>
     <div class="rounded-md bg-slate-100 p-6 border border-gray-300 hover:bg-slate-200/60 transition duration-300" v-if="answer.relevant_context">
         <div>
-            <p class="text-xl font-medium">Lorem ipsum</p>
-            <p class="text-">2. Dolor sit > 3. Amet, consectetur</p>
+            <p class="text-xl font-medium">{{ answer.metadata[0].source }}</p>
+            <p class="text-">{{ answer.metadata[0].section }}</p>
         </div>
 
         <blockquote class="p-4 my-4 border-l-4 border-lime-600 bg-gray-200/80" v-if="answer.answer">
