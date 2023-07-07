@@ -18,7 +18,7 @@
         </div>
 
         <pre class="mb-2 italic">Mikor építették a vízlépcsőket a Duna felső szakaszán?</pre>
-        <pre class="mb-2 italic">Mennyi szabadságot kapok örökbefogadás esetén?</pre>
+        <!-- <pre class="mb-2 italic">Mennyi szabadságot kapok örökbefogadás esetén?</pre> -->
         <SearchBar v-model:query="question" :pending="pending" :ask-question="askQuestion" :error="error" class="mb-4"/>
         <AskQuestion v-if="Object.keys(answers.system) == 0" />
         <p v-if="!pending && answers" v-for="answer in answers.answers">

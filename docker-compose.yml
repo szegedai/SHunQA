@@ -25,6 +25,7 @@ services:
     environment:
       NUXT_APP_CDN_URL: ${NUXT_APP_CDN_URL}
       DEBUG: ${DEBUG}
+      FRONTEND_ELASTIC_TABLES: ${FRONTEND_ELASTIC_TABLES}
 
   nginx:
     image: nginx

@@ -1,42 +1,6 @@
 {
   "models": [{
       "pipeline" : "question-answering",
-      "tokenizer" : "ZTamas/hubert-qa-milqa",
-      "model" : "ZTamas/hubert-qa-milqa",
-      "device": -1,
-      "handle_impossible_answer" : "False",
-      "max_answer_len" : 50,
-      "visible_name": "huBERT rövid válaszos modell"
-    },
-    {
-      "pipeline" : "question-answering",
-      "tokenizer": "ZTamas/hubert-qa-milqa-impossible",
-      "model" : "ZTamas/hubert-qa-milqa-impossible",
-      "device" : -1,
-      "handle_impossible_answer" : "True",
-      "max_answer_len" : 50,
-      "visible_name": "huBERT rövid válaszos, nem megválaszolható modell"
-    },
-    {
-      "pipeline" : "question-answering",
-      "tokenizer": "ZTamas/hubert-qa-milqa-impossible-long-answer",
-      "model" : "ZTamas/hubert-qa-milqa-impossible-long-answer",
-      "device" : -1,
-      "handle_impossible_answer" : "True",
-      "max_answer_len" : 1000,
-      "visible_name": "huBERT hosszú válaszos, nem megválaszolható modell"
-    },
-    {
-      "pipeline" : "question-answering",
-      "tokenizer": "ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible",
-      "model" : "ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible",
-      "device" : -1,
-      "handle_impossible_answer" : "True",
-      "max_answer_len" : 50,
-      "visible_name": "RoBERTa rövid válaszos, nem megválaszolható modell"
-    },
-    {
-      "pipeline" : "question-answering",
       "tokenizer": "ZTamas/xlm-roberta-large-squad2_impossible_long_answer",
       "model" : "ZTamas/xlm-roberta-large-squad2_impossible_long_answer",
       "device" : -1,
@@ -47,13 +11,14 @@
   ],
 
   "elastics": [
+
     {
-      "elastic_table_name": "milqa_w_lemma_w_official_context",
-      "visible_name": "MILQA"
+      "elastic_table_name": "milqa_extend_headers",
+      "visible_name": "MILQA Extended Headers"
     },
     {
-      "elastic_table_name": "word_war_2_wikidump",
-      "visible_name": "WW2 WikiDump"
+      "elastic_table_name": "forig_extend_headers",
+      "visible_name": "4iG Extended Headers"
     }
   ]
 }
