@@ -4,6 +4,9 @@ Required: Docker, Docker Compose (https://docs.docker.com/compose/install/linux/
 
 Recommendation: use VS Code with Docker extension.
 
+> **Warning**<br>
+Note that you need about 25 GB of free space on the drive, and if the capacity of your drive goes below 10%, the elastic will not install.
+
 ```sh
 git clone https://github.com/szegedai/SHunQA.git
 git checkout dockerization
@@ -42,7 +45,7 @@ yes | elasticsearch-reset-password -u elastic
 
 Copy the password to [.env](.env) -> `ELASTIC_PASSWORD`
 
-Generate Service token for Kibana if you want use the Kibana on web:
+Generate Service token for Kibana if you want use the Kibana on web, otherwise the next two command are not necessary.
 
 ```shell
 elasticsearch-service-tokens create elastic/kibana kibana-token
