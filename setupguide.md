@@ -37,12 +37,12 @@ Generate and save password for 'elastic' user:
 
 ```shell
 cd /opt/bitnami/elasticsearch/bin
-elasticsearch-reset-password -u elastic
+yes | elasticsearch-reset-password -u elastic
 ```
 
 Copy the password to [.env](.env) -> `ELASTIC_PASSWORD`
 
-Generate Service token for Kibana:
+Generate Service token for Kibana if you want use the Kibana on web:
 
 ```shell
 elasticsearch-service-tokens create elastic/kibana kibana-token
