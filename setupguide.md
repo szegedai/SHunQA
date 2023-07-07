@@ -1,12 +1,23 @@
 # Setup Guide
 
+Recommendation: use VS Code with Docker extension.
+
 ```sh
 git clone https://github.com/szegedai/SHunQA.git
 git checkout dockerization
-docker compose up
+cp .env.example .env 
+docker compose up -d
 ```
 
 ## Elastic and Kibana
+
+Change the permissions of the config files:
+
+```
+chmod 777 configs/*.yml
+```
+
+- Compose up only the elastic `docker compose up -d elasticsearch` (with VS Code go to the docker-compose.yml file and right click and `Compose Up - Select Services`)
 
 Copy the elastic container's ID:
 
