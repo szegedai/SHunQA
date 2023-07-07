@@ -58,6 +58,7 @@ To avoid losing the current password do not down the containers.
 
 ## Frontend
 
-1. Change the [.env](.env) `NUXT_APP_CDN_URL` variable into the URL that the site runs on. For example if you access the site at `https://ai.inf.u-szeged.hu/demo/qa/` it should be that.
+1. If you would like to use the server in localhost you shouldn't change the url. Otherwise change the [.env](.env) `NUXT_APP_CDN_URL` variable into the URL that the site runs on. For example if you access the site at `https://ai.inf.u-szeged.hu/demo/qa/` it should be that. 
 2. The `FRONTEND_ELASTIC_TABLES` env variable should be parsed in however if it's not the case, change it in the `frontend/nuxt.config.ts`. In theory this should be more strings with , between them.
 3. Change the `apiUrl` in the `frontend/nuxt.config.ts` to the `example/api` for example if you access the site at `https://ai.inf.u-szeged.hu/demo/qa/` it should be `https://ai.inf.u-szeged.hu/demo/qa/api`.
+4. Then run `docker compose up -d --build frontend`
