@@ -1,8 +1,10 @@
 # Setup Guide
 
-`git clone [szegedai/shunqa](https://github.com/szegedai/SHunQA.git)`
-`git checkout dockerization`
-`docker compose up`
+```sh
+git clone https://github.com/szegedai/SHunQA.git
+git checkout dockerization
+docker compose up
+```
 
 ## Elastic and Kibana
 
