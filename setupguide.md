@@ -67,3 +67,11 @@ To avoid losing the current password do not down the containers.
 2. The `FRONTEND_ELASTIC_TABLES` env variable should be parsed in however if it's not the case, change it in the `frontend/nuxt.config.ts`. In theory this should be more strings with , between them.
 3. If you would like to use the server in localhost you shouldn't change the url. Otherwise change the `apiUrl` in the `frontend/nuxt.config.ts` to the `example/api` for example if you access the site at `https://ai.inf.u-szeged.hu/demo/qa/` it should be `https://ai.inf.u-szeged.hu/demo/qa/api`.
 4. Then run `docker compose up -d --build frontend`.
+
+## Elastic
+
+1. Make a `raw_data` director on the `./scripts/pipeline`.
+2. Move all .docx files to here (`./scripts/pipeline/raw_data`)
+3. Run `pip install -r requirements.txt` command and after that run the `./script/pipeline/fill_elastic.py` srcipt.
+
+## Open on [web]([web](http://localhost:25565))
