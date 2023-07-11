@@ -12,9 +12,11 @@ from docx.oxml.table import CT_Tbl
 from docx.table import _Cell, Table, _Row
 from docx.text.paragraph import Paragraph
 
+elastic_pwd = os.environ.get("ELASTIC_PASSWORD")
+
 ES = Elasticsearch(
         "http://localhost:3427/",
-        basic_auth=("elastic", "7ZQhi+zIL357DgjIjyi0"),
+        basic_auth=("elastic", elastic_pwd),
         verify_certs=False
     )
 
