@@ -4,6 +4,7 @@ import os
 import pandas as pd
 from tqdm import tqdm
 from elasticsearch import Elasticsearch
+from dotenv import load_dotenv
 
 from docx import Document
 from docx.document import Document as _Document
@@ -12,6 +13,7 @@ from docx.oxml.table import CT_Tbl
 from docx.table import _Cell, Table, _Row
 from docx.text.paragraph import Paragraph
 
+load_dotenv()
 elastic_pwd = os.environ.get("ELASTIC_PASSWORD")
 
 ES = Elasticsearch(
@@ -316,7 +318,7 @@ if __name__ == "__main__":
     try:
         data, headings = zip(*[get_text(os.path.join("raw_data", x)) for x in os.listdir("raw_data")])
     except:
-        raise Exception("Use: mkdir" + dir_name + "command and move here the ONLY .docx files!")
+        raise Exception("Use: mkdir " + dir_name + " command and move here the ONLY .docx files!")
 
     smaller_data_snipets, fname = make_smaller_text_original(data, dir_name, source_headings=headings)
 
