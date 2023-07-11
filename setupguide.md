@@ -74,4 +74,4 @@ To avoid losing the current password do not down the containers.
 2. Move all .docx files to here (`./scripts/pipeline/raw_data`)
 3. Run `pip install -r requirements.txt` command and after that run the `./script/pipeline/fill_elastic.py` srcipt.
 
-## Open on [web]([web](http://localhost:25565))
+## Open on [web](http://localhost:25565)
