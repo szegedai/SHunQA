@@ -90,8 +90,12 @@ def predict_from_question(query, size, elastic, model_type):
     else:
         prediction = {"answer": "", "start": 0, "end": 0, "score": -1}
 
-    model_answer = prediction["answer"]
-
+    
+    if "\n-\n\n" in prediction["answer"]:
+        model_answer = prediction["answer"].split("\n-\n\n")[0]
+    else:
+        model_answer = prediction["answer"]
+        
     relevant_context = ""
     elastic_score = 0
     file_name, h1, h2, h3 = "", "", "", ""
