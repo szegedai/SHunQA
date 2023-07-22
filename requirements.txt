@@ -6,3 +6,6 @@ spacy==3.4.4
 hu-core-news-trf @ https://huggingface.co/huspacy/hu_core_news_trf/resolve/main/hu_core_news_trf-any-py3-none-any.whl
 sentencepiece==0.1.97
 protobuf==3.20.0
+python-docx==0.8.11
+pandas==2.0.3
+huspacy==0.9.0
