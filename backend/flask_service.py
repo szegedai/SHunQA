@@ -38,6 +38,7 @@ MONGO_URL = os.environ.get("MONGO_URL")
 ELASTIC_URL = os.environ.get("ELASTIC_URL")
 ELASTIC_USER = os.environ.get("ELASTIC_USER")
 ELASTIC_PASSWORD = os.environ.get("ELASTIC_PASSWORD")
+ELASTIC_PASSWORD = "lFqLIrbCQfI84P6v_ue0"
 DEBUG = os.environ.get("DEBUG", "").lower() == "true"
 
 
@@ -149,12 +150,11 @@ def rest_api():
 
         if not DEBUG:
             for answer in query:
-                for key in answer.keys():
-                    del answer["lemmatized_context"]
-                    del answer["official_question"]
-                    del answer["official_context"]
-                    del answer["model_score"]
-                    del answer["elastic_score"]
+                del answer["lemmatized_context"]
+                del answer["official_question"]
+                del answer["official_context"]
+                del answer["model_score"]
+                del answer["elastic_score"]
 
         return jsonify({"answers": query, "system": {"id": mongo_id}})
     except Exception as e:
@@ -201,4 +201,4 @@ def feedback_dislike():
 if __name__ == "__main__":
     client = MongoClient(MONGO_URL)
     db = client["shunqa"]
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
