@@ -1,5 +1,10 @@
-# https://github.com/attardi/wikiextractor
+# Description: Extract the wiki dump with the categories.
+
+# doc: https://github.com/attardi/wikiextractor
 # python -m wikiextractor.WikiExtractor data.xml
+
+# You can filter the wiki page's title with that link: https://petscan.wmflabs.org/
+
 import pandas as pd
 import os
 import csv

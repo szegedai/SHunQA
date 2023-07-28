@@ -1,3 +1,6 @@
+# Description: Parse the dump file and write the text to a file
+# download a dump parser from here https://dumps.wikimedia.org/ after that you can use the script below
+
 import mwxml
 
 dump = mwxml.Dump.from_file(open("../data.xml"))

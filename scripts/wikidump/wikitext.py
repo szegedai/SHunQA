@@ -1,3 +1,5 @@
+# This script is used to extract the raw text from the wikitext file and store it in elasticsearch
+
 from elasticsearch import Elasticsearch
 import mwparserfromhell
 
@@ -37,7 +39,7 @@ for line in textfield_list:
         continue
     textfield_wo_ws += line + "\n"
 
-es = Elasticsearch(
+es = Elasticsearch( # usual auth is needed here
     "https://localhost:9200",
     ca_certs="/path/to/http_ca.crt",
     basic_auth=("elastic", "facebook"),

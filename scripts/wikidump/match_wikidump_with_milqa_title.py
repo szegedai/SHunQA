@@ -1,3 +1,5 @@
+# Description: This script matches the milqa dataset with the wikidump dataset.
+
 import os
 import pandas as pd
 import csv
