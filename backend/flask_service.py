@@ -6,6 +6,7 @@ import json
 import time
 from pymongo import MongoClient
 import os
+import transformers
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
@@ -38,8 +39,22 @@ MONGO_URL = os.environ.get("MONGO_URL")
 ELASTIC_URL = os.environ.get("ELASTIC_URL")
 ELASTIC_USER = os.environ.get("ELASTIC_USER")
 ELASTIC_PASSWORD = os.environ.get("ELASTIC_PASSWORD")
+# ELASTIC_PASSWORD = "lFqLIrbCQfI84P6v_ue0"
 DEBUG = os.environ.get("DEBUG", "").lower() == "true"
 
+client = MongoClient(MONGO_URL)
+db = client["shunqa"]
+print("app started")
+
+model = "meta-llama/Llama-2-7b-chat-hf"
+
+tokenizer = AutoTokenizer.from_pretrained(model)
+pipeline = transformers.pipeline(
+    "text-generation",
+    model=model,
+    # torch_dtype=torch.float16,
+    device_map="auto",
+)
 
 @app.route("/test")
 def test():
@@ -128,6 +143,83 @@ def predict_from_question(query, size, elastic, model_type):
 
     return return_value
 
+# @app.route('/llm', methods=["POST"])
+def predict_using_llm_from_question(query, size, elastic):
+    doc_q = nlp_hu(query)
+    clean_tokens = list()
+
+    for token in doc_q:
+        # print(token.text, token.pos_, token.dep_)
+        if token.pos_ not in ["DET", "ADV", "PRON", "PUNCT"]:
+            clean_tokens.append(token.lemma_)
+
+    clean_question = " ".join(clean_tokens)
+
+    body = {"size": size, "query": {"match": {"document": clean_question}}}
+
+    es = Elasticsearch(
+        ELASTIC_URL, http_auth=(ELASTIC_USER, ELASTIC_PASSWORD), verify_certs=False
+    )
+
+    s = es.search(index=all_elastics[elastic], body=body)
+
+    # The query only returns the text before the question mark, so we add it here.
+    official_question = query if query[-1:] == "?" else query + "?"
+    # We use the highest ranked document by the elasticsearch.
+    contexts = list(s["hits"]["hits"])
+
+    official_all_context = "\n-\n\n".join(
+        context["_source"]["official_document"] for context in contexts
+    )
+
+    app.logger.info(contexts)
+
+    prompt = f'Válaszolj a kérdésre magyarul a kontextus alapján:\n{official_question}\n\nKontextus:\n{official_all_context}\nVálasz:\n'
+
+    answer = ""
+    if official_all_context != "":
+        sequences = pipeline(prompt,
+                            do_sample=True,
+                            top_k=10,
+                            num_return_sequences=1,
+                            eos_token_id=tokenizer.eos_token_id,
+                            max_length=2000,)
+        for seq in sequences:
+            app.logger.info(seq['generated_text'])
+            answer = seq['generated_text'].split(prompt)[1]
+    else:
+        answer = ""
+    
+    return_value = list()
+        
+    relevant_context = ""
+    elastic_score = 0
+    # file_name, h1, h2, h3 = "", "", "", ""
+    # for context_raw in contexts:
+    #     if context_raw["_source"]["official_document"].__contains__(model_answer):
+    #         relevant_context = context_raw["_source"]["official_document"]
+    #         elastic_score = context_raw["_score"]
+    #         file_name = context_raw["_source"]["file_name"]
+    #         h1 = context_raw["_source"]["h1"]
+    #         h2 = context_raw["_source"]["h2"]
+    #         h3 = context_raw["_source"]["h3"]
+    #         break
+
+    return_value.append(
+        {
+            "official_question": official_question,
+            "official_context": official_all_context,
+            "relevant_context": relevant_context,
+            "answer": answer,
+            "elastic_score": elastic_score,
+            # "metadata": [
+            #     {"section": h2 + " > " + h3, "filename": file_name, "source": h1}
+            # ]
+        }
+    )
+
+    return return_value
+
 
 @app.route("/qa", methods=["POST"])
 def rest_api():
@@ -144,22 +236,54 @@ def rest_api():
 
         record["time"] = time.time()
         mongo_id = str(
-            db["qa"].insert_one({"answers": query, "system": record}).inserted_id
+            db["qa"].insert_one({"answers": query, "system": record, "type": "qa"}).inserted_id
         )
 
         if not DEBUG:
             for answer in query:
-                for key in answer.keys():
-                    del answer["lemmatized_context"]
-                    del answer["official_question"]
-                    del answer["official_context"]
-                    del answer["model_score"]
-                    del answer["elastic_score"]
+                del answer["lemmatized_context"]
+                del answer["official_question"]
+                del answer["official_context"]
+                del answer["model_score"]
+                del answer["elastic_score"]
 
         return jsonify({"answers": query, "system": {"id": mongo_id}})
     except Exception as e:
         app.logger.error(e)
         db["errors"].insert_one({"error": str(e), "time": time.time(), "type": "qa"})
+        return jsonify({}), 418
+
+
+@app.route("/llm", methods=["POST"])
+def rest_api_llm():
+    try:
+        record = json.loads(request.data)
+        if record["query"] == "":
+            return jsonify({"answers": [], "system": {}})
+
+        record["elapsed_time"] = time.time()
+        query = predict_using_llm_from_question(
+            record["query"], record["size"], record["elastic"]
+        )
+        record["elapsed_time"] = time.time() - record["elapsed_time"]
+
+        record["time"] = time.time()
+        mongo_id = ""
+        # mongo_id = str(
+        #     db["qa"].insert_one({"answers": query, "system": record, "type": "llm"}).inserted_id
+        # )
+
+        if not DEBUG:
+            for answer in query:
+                del answer["lemmatized_context"]
+                del answer["official_question"]
+                del answer["official_context"]
+                del answer["elastic_score"]
+
+        return jsonify({"answers": query, "system": {"id": mongo_id}})
+    except Exception as e:
+        app.logger.error(e)
+        # db["errors"].insert_one({"error": str(e), "time": time.time(), "type": "llm"})
         return jsonify({}), 418
 
 
@@ -199,6 +323,4 @@ def feedback_dislike():
 
 
 if __name__ == "__main__":
-    client = MongoClient(MONGO_URL)
-    db = client["shunqa"]
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)

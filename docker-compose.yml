@@ -15,6 +15,7 @@ services:
       ELASTIC_USER: ${ELASTIC_USER}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       DEBUG: ${DEBUG}
+      HUGGING_FACE_HUB_TOKEN: ${HUGGING_FACE_HUB_TOKEN}
 
   frontend:
     build: ./frontend
