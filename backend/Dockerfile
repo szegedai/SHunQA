@@ -26,6 +26,7 @@ ENV VIRTUAL_ENV=/home/app/venv
 RUN python -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 # RUN export FLASK_APP=app.py
+RUN pip install scikit-learn==1.3.0
 RUN pip install torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip install -r requirements.txt
 

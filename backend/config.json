@@ -11,14 +11,15 @@
   ],
 
   "elastics": [
-
     {
       "elastic_table_name": "milqa_extend_headers",
-      "visible_name": "MILQA Extended Headers"
+      "visible_name": "MILQA Extended Headers",
+      "ood_class": 0
     },
     {
       "elastic_table_name": "forig_extend_headers",
-      "visible_name": "4iG Extended Headers"
+      "visible_name": "4iG Extended Headers",
+      "ood_class": 1
     }
   ]
 }

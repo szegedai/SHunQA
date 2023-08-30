@@ -1,11 +1,13 @@
+import pickle
 from flask import Flask, request, render_template, jsonify, send_file
 from elasticsearch import Elasticsearch
-from transformers import pipeline, AutoTokenizer, AutoModelForQuestionAnswering
+from transformers import pipeline, AutoTokenizer, AutoModelForQuestionAnswering, AutoModel
 import spacy
 import json
 import time
 from pymongo import MongoClient
 import os
+from sklearn.linear_model import LogisticRegression
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
@@ -15,6 +17,7 @@ with open("config.json", "r") as config:
 
 all_models = dict()
 all_elastics = dict()
+all_ood_classes = dict()
 
 for model in config_variables["models"]:
     all_models[model["model"]] = pipeline(
@@ -30,7 +33,11 @@ for elastic_table in config_variables["elastics"]:
     all_elastics[elastic_table["elastic_table_name"]] = elastic_table[
         "elastic_table_name"
     ]
+    all_ood_classes[elastic_table["elastic_table_name"]] = elastic_table["ood_class"]
 
+contriever_tokenizer = AutoTokenizer.from_pretrained("facebook/mcontriever-msmarco")
+contriever_model = AutoModel.from_pretrained("facebook/mcontriever-msmarco")
+ood_model = pickle.load(open("models/ood_model.pkl", "rb"))
 
 nlp_hu = spacy.load("hu_core_news_trf")
 
@@ -138,9 +145,14 @@ def rest_api():
             return jsonify({"answers": [], "system": {}})
 
         record["elapsed_time"] = time.time()
-        query = predict_from_question(
-            record["query"], record["size"], record["elastic"], record["model_type"]
-        )
+        ood_class = ood_model.predict(get_contriever_vector([record["query"]]).detach().numpy())[0].item()
+        if (ood_class == all_ood_classes[record["elastic"]]):
+            query = predict_from_question(
+                record["query"], record["size"], record["elastic"], record["model_type"]
+            )
+            query[0]["ood_class"] = ood_class
+        else:
+            query = list([{"ood_class": ood_class}])
         record["elapsed_time"] = time.time() - record["elapsed_time"]
 
         record["time"] = time.time()
@@ -148,13 +160,20 @@ def rest_api():
             db["qa"].insert_one({"answers": query, "system": record}).inserted_id
         )
 
-        if not DEBUG:
-            for answer in query:
-                del answer["lemmatized_context"]
-                del answer["official_question"]
-                del answer["official_context"]
-                del answer["model_score"]
-                del answer["elastic_score"]
+        try:
+            if not DEBUG:
+                for answer in query:
+                    del answer["lemmatized_context"]
+                    del answer["official_question"]
+                    del answer["official_context"]
+                    del answer["model_score"]
+                    del answer["elastic_score"]
+                    del answer["ood_class"]
+        except Exception as e:
+            app.logger.error(e)
+            db["errors"].insert_one(
+                {"error": str(e), "time": time.time(), "type": "qa_delete_ood"}
+            )
 
         return jsonify({"answers": query, "system": {"id": mongo_id}})
     except Exception as e:
@@ -196,6 +215,19 @@ def feedback_dislike():
             {"error": str(e), "time": time.time(), "type": "dislike"}
         )
         return jsonify({}), 400
+
+
+def get_contriever_vector(sentences):
+    inputs = contriever_tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
+
+    outputs = contriever_model(**inputs)
+
+    def mean_pooling(token_embeddings, mask):
+        token_embeddings = token_embeddings.masked_fill(~mask[..., None].bool(), 0.0)
+        sentence_embeddings = token_embeddings.sum(dim=1) / mask.sum(dim=1)[..., None]
+        return sentence_embeddings
+
+    return mean_pooling(outputs[0], inputs["attention_mask"])
 
 
 if __name__ == "__main__":
