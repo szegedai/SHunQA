@@ -2,7 +2,7 @@
   <div class="container lg:max-w-2xl mt-7">
     <div class="flex flex-row items-center justify-between">
       <span class="flex flex-row space-x-1">
-        <img class="w-8 h-8" src="assets/icon.svg" />
+        <img class="w-8 h-8" src="@/assets/icon.svg" />
         <h1 class="text-3xl mb-2">
           Projectroom<span class="text-lime-600">41</span>: <span class="font-medium">SHunQA</span>
         </h1>
