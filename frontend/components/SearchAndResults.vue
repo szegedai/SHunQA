@@ -33,7 +33,7 @@ defineProps({
 })
 
 const config = useRuntimeConfig().public
-const elasticTables = config.elasticTables
+const elasticTables = config.elasticTables.split(",")
 const question = ref("")
 const settings = ref({
     size: 3,

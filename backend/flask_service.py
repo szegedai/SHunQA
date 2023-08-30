@@ -45,7 +45,7 @@ MONGO_URL = os.environ.get("MONGO_URL")
 ELASTIC_URL = os.environ.get("ELASTIC_URL")
 ELASTIC_USER = os.environ.get("ELASTIC_USER")
 ELASTIC_PASSWORD = os.environ.get("ELASTIC_PASSWORD")
-ELASTIC_PASSWORD = "lFqLIrbCQfI84P6v_ue0"
+# ELASTIC_PASSWORD = "lFqLIrbCQfI84P6v_ue0"
 DEBUG = os.environ.get("DEBUG", "").lower() == "true"
 
 
