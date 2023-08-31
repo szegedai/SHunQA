@@ -283,7 +283,7 @@ def preprocess_data(dataframe):
 
         context_lemmatized_list.append(context_lemmatized)
         
-    df_preprocessed = df.copy(df)
+    df_preprocessed = df.copy(True)
     
     df_preprocessed["lemmatized_text"] = context_lemmatized_list
     
