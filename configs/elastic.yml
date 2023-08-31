@@ -1,0 +1,24 @@
+http:
+  port: "3427"
+path:
+  data: /bitnami/elasticsearch/data
+discovery:
+  type: single-node
+plugin:
+  mandatory: analysis-icu,mapper-size
+node:
+  name: elasticsearch
+cluster:
+  name: elasticsearch
+bootstrap:
+  memory_lock: true
+xpack:
+  ml:
+    enabled: "false"
+  security:
+    enabled: true
+    enrollment:
+      enabled: true
+# network.host is the docker container name
+network:
+  host: elasticsearch

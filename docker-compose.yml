@@ -10,7 +10,11 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URL=mongodb://user:pass@mongo
+      MONGO_URL: ${MONGO_URL}
+      ELASTIC_URL: ${ELASTIC_URL}
+      ELASTIC_USER: ${ELASTIC_USER}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      DEBUG: ${DEBUG}
 
   frontend:
     build: ./frontend
@@ -19,7 +23,10 @@ services:
     networks:
       - shunqa-network
     environment:
-      - NUXT_APP_CDN_URL=https://chatbot-rgai3.inf.u-szeged.hu/demo_qa
+      NUXT_APP_CDN_URL: ${NUXT_APP_CDN_URL}
+      NUXT_PUBLIC_API_URL: ${NUXT_APP_CDN_URL}/api
+      NUXT_PUBLIC_DEBUG: ${DEBUG}
+      NUXT_PUBLIC_ELASTIC_TABLES: ${ELASTIC_TABLES}
 
   nginx:
     image: nginx
@@ -35,17 +42,49 @@ services:
     networks:
       - shunqa-network
     volumes:
-      - type: bind
-        source: ./data
-        target: /data/db
-        bind:
-          create_host_path: true
+      - mongodb-data:/data/db
     environment:
-      - MONGODB_INITDB_ROOT_USERNAME=user
-      - MONGODB_INITDB_ROOT_PASSWORD=pass
+      MONGODB_INITDB_ROOT_USERNAME: ${MONGODB_INITDB_ROOT_USERNAME}
+      MONGODB_INITDB_ROOT_PASSWORD: ${MONGODB_INITDB_ROOT_PASSWORD}
+
+  elasticsearch:
+    image: bitnami/elasticsearch:8.5.3
+    environment:
+      ELASTICSEARCH_PORT_NUMBER: ${ELASTICSEARCH_PORT_CONF}
+      ELASTICSEARCH_HEAP_SIZE: ${ELASTICSEARCH_HEAP_SIZE_CONF}
+      ELASTICSEARCH_PLUGINS: ${ELASTICSEARCH_PLUGINS_CONF}
+    volumes:
+      - ./configs/elastic.yml:/opt/bitnami/elasticsearch/config/elasticsearch.yml
+      - elastic-data:/elasticsearch/data
+      - elastic-instance:/opt/bitnami/elasticsearch
+    networks:
+      - shunqa-network
+    ports:
+      - ${ELASTICSEARCH_PORT_CONF}:${ELASTICSEARCH_PORT_CONF}
+
+  kibana:
+    image: bitnami/kibana:8.5.3
+    environment:
+      KIBANA_ELASTICSEARCH_PORT_NUMBER: ${KIBANA_PORT_CONF_TUNNEL}
+      KIBANA_ELASTICSEARCH_URL: http://elasticsearch:${ELASTICSEARCH_PORT_CONF}
+      KIBANA_ELASTICSEARCH_SERVICEACCOUNTTOKEN: ${KIBANA_ELASTICSEARCH_SERVICEACCOUNTTOKEN}
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:${ELASTICSEARCH_PORT_CONF}"]'
+    networks:
+      - shunqa-network
+    ports:
+      - ${KIBANA_PORT_CONF}:${KIBANA_PORT_CONF_TUNNEL}
+    depends_on:
+      - elasticsearch
+    volumes:
+      - kibana-data:/bitnami/kibana
+      - ./configs/kibana.yml:/opt/bitnami/kibana/config/kibana.yml
 
 networks:
   shunqa-network:
 
 volumes:
   nginx-conf:
+  mongodb-data:
+  kibana-data:
+  elastic-data:
+  elastic-instance:

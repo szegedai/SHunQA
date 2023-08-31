@@ -1,0 +1,7 @@
+https://huggingface.co/huspacy/hu_core_news_trf/resolve/main/hu_core_news_trf-any-py3-none-any.whl
+spacy==3.5.0
+python-docx==0.8.10
+pandas==1.2.0
+elasticsearch==8.6.0
+python-dotenv==1.0.0
+scikit-learn==1.3.0
