@@ -1,4 +1,7 @@
-class OutOfDomainDetection:
+import PipelineSteps
+
+
+class Retriever(PipelineSteps):
     def __init__(self, *args, **kwargs):
         pass
 

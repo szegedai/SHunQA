@@ -1,4 +1,7 @@
-class Reader:
+import PipelineSteps
+
+
+class OutOfDomainDetection(PipelineSteps):
     def __init__(self, *args, **kwargs):
         pass
 
