@@ -1,10 +1,15 @@
-def handle_error(error: Exception, task_name: str) -> dict:
+from pipelines import PipelineSteps
+from pipelines import OutOfDomainDetection
+
+
+def handle_error(error: Exception, task_name: str, data: dict) -> dict:
     """
     Handle errors that occur during task execution.
 
     Args:
         error (Exception): The exception that occurred.
         task_name (str): The name of the task where the error occurred.
+
 
     Returns:
         dict: A dictionary containing information about the error.
@@ -16,30 +21,31 @@ def handle_error(error: Exception, task_name: str) -> dict:
             # Code that may raise an exception
             result = some_function()
         except Exception as e:
-            error_info = handle_error(e, "some_function")
+            error_info = handle_error(e, "some_function", data)
             print(error_info)
     """
     print(f"Error occurred at task: {task_name}")
     return {
         "error_occurred_at": task_name,
         "error": error,
+        "data": data
     }
 
 
 class Pipeline:
-    def __init__(self, tasks: list[tuple[str, callable]]):
+    def __init__(self, tasks: list[tuple[str, PipelineSteps]]):
         """
         Initialize a Pipeline object with a list of tasks.
 
         Args:
-            tasks (list[tuple[str, callable]]): A list of task tuples where each tuple
-                contains a task name (str) and a callable function.
+            tasks (list[tuple[str, PipelineSteps]]): A list of task tuples where each tuple
+                contains a task name (str) and a class inherited from PipelineSteps.
 
         Raises:
             ValueError: If tasks is None or empty.
 
         Example:
-            tasks = [("task1", function1), ("task2", function2)]
+            tasks = [("task1", PipelineSteps), ("task2", PipelineSteps)]
             pipeline = Pipeline(tasks)
         """
         if tasks is None or len(tasks) == 0:
@@ -61,16 +67,19 @@ class Pipeline:
             ValueError: If data is empty.
 
         Example:
-            data = {"key": "value"}
+            tasks = [("task1", PipelineSteps), ("task2", PipelineSteps)]
+            data = {"query": "value"}
             pipeline = Pipeline(tasks)
             result = pipeline.run(data)
         """
+
         if not data:
             raise ValueError("data cannot be empty")
 
-        for task_name, task_func in self.tasks:
+        for task_name, task in self.tasks:
             try:
-                data = task_func(data)
+                data = task.run(data)
+
             except Exception as e:
-                return handle_error(e, task_name)
+                return handle_error(e, task_name, data)
         return data

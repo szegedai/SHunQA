@@ -6,5 +6,10 @@ class PipelineSteps(ABC):
         pass
 
     @abstractmethod
-    def run(self):
+    def run(self, data: dict) -> dict:
         pass
+
+    @abstractmethod
+    def data_check(self, data: dict) -> dict:
+        pass
+

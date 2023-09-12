@@ -1,4 +1,4 @@
-import PipelineSteps
+from .pipeline_steps import PipelineSteps
 
 
 class Reader(PipelineSteps):
@@ -6,4 +6,7 @@ class Reader(PipelineSteps):
         pass
 
     def run(self):
+        pass
+
+    def data_check(self):
         pass

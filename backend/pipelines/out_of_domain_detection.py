@@ -1,4 +1,4 @@
-import PipelineSteps
+from .pipeline_steps import PipelineSteps
 
 
 class OutOfDomainDetection(PipelineSteps):
@@ -6,4 +6,7 @@ class OutOfDomainDetection(PipelineSteps):
         pass
 
     def run(self):
+        pass
+
+    def data_check(self):
         pass
