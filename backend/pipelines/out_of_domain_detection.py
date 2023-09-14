@@ -18,7 +18,7 @@ class OutOfDomainDetection(PipelineSteps):
         self.ood_model = ood_model
         self.ood_class = ood_class
 
-    def run(self, data: dict) -> dict:
+    def run(self, data: dict) -> dict | PipelineFailError:
         """Runs the OOD detection pipeline step.
 
         Args:
@@ -45,7 +45,7 @@ class OutOfDomainDetection(PipelineSteps):
 
         return data
 
-    def data_check(self, data: dict) -> dict:
+    def data_check(self, data: dict) -> dict | CheckFailError:
         """Checks if the data contains the required keys.
 
         Args:
