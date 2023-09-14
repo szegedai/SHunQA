@@ -1,5 +1,5 @@
-from pipelines import PipelineSteps
-from pipelines import OutOfDomainDetection
+from backend.pipelines.pipeline_steps import PipelineSteps
+from backend.pipelines.out_of_domain_detection import OutOfDomainDetection
 
 
 def handle_error(error: Exception, task_name: str, data: dict) -> dict:

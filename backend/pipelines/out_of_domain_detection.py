@@ -1,5 +1,5 @@
-from exceptions import CheckFailError, PipelineFailError
-from .pipeline_steps import PipelineSteps
+from backend.exceptions import CheckFailError, PipelineFailError
+from backend.pipelines.pipeline_steps import PipelineSteps
 
 from sklearn.linear_model import LogisticRegression
 from transformers import PreTrainedTokenizer, PreTrainedTokenizerFast, AutoModel
