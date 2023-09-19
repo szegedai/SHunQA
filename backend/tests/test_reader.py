@@ -1,8 +1,13 @@
+import os
 import pytest
 from transformers import pipeline as hf_pipeline
 from backend.pipelines.reader import Reader
 from backend.exceptions.check_fail import CheckFailError
 from backend.exceptions.pipeline_fail import PipelineFailError
+
+# specify cuda gpu
+# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 
 pipeline_step = Reader(
@@ -17,7 +22,7 @@ pipeline_step = Reader(
 )
 pipeline_fail = Reader(
     hf_pipeline(
-        task="automatic-speech-recognition",
+        task="text-generation",
         model="ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible",
         tokenizer="ZTamas/xlm-roberta-large-squad2-qa-milqa-impossible",
         device=0,  # GPU selection, -1 on CPU
