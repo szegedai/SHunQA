@@ -9,6 +9,7 @@ def handle_error(error: Exception, task_name: str, data: dict) -> dict:
     Args:
         error (Exception): The exception that occurred.
         task_name (str): The name of the task where the error occurred.
+        data (dict): input data
 
 
     Returns:
@@ -78,6 +79,7 @@ class Pipeline:
 
         for task_name, task in self.tasks:
             try:
+                task.data_check(data)
                 data = task.run(data)
 
             except Exception as e:
