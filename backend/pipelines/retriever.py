@@ -1,8 +1,7 @@
-from .pipeline_steps import PipelineSteps
+from backend.pipelines.pipeline_steps import PipelineSteps
 from backend.exceptions import CheckFailError, PipelineFailError
 from transformers import PreTrainedTokenizer, PreTrainedTokenizerFast, AutoModel
-from elasticsearch import Elasticsearch
-import elastic_transport
+from elasticsearch import Elasticsearch, exceptions
 
 
 class Retriever(PipelineSteps):
@@ -35,13 +34,13 @@ class Retriever(PipelineSteps):
             dict: The modified data after executing the pipeline step.
         """
         try:
-            query_embedding = self.get_contriever_vector(data["query"])
+            query_embedding = self.get_contriever_vector(data["query"]).tolist()[0]
 
             body = {
                 "size": self.size,
                 "query": {
                     "script_score": {
-                        "querry": {"match": {"document": data["query"]}},
+                        "query": {"match": {"document": data["query"]}},
                         "script": {
                             "source": f"_score + {self.contriever_weight} * (cosineSimilarity(params.query_embedding, 'embedding') + 1.0)",
                             "params": {"query_embedding": query_embedding},
@@ -58,10 +57,15 @@ class Retriever(PipelineSteps):
             data["lemmatized_contexts"] = [
                 context["_source"]["document"] for context in contexts
             ]
-        except elastic_transport.ConnectionError:
-            raise PipelineFailError("retriever", "Can't connect to Elastic", data)
-        except elastic_transport.ConnectionTimeout:
-            raise PipelineFailError("retriever", "ElasticSearch timed out", data)
+        
+        except exceptions.ApiError as e:
+            raise PipelineFailError("retriever", e.message, data) from e
+        except exceptions.ConnectionError as e:
+            raise PipelineFailError("retriever", "Can't connect to Elastic", data) from e
+        except exceptions.ConnectionTimeout as e:
+            raise PipelineFailError("retriever", "Elastic connection timed out", data) from e
+        except Exception as e:
+            raise PipelineFailError("retriever", str(e), data) from e
 
         return data
 
