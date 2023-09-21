@@ -5,6 +5,5 @@
         "compose",
         "nginx",
         "scripts"
-    ],
-    "python.analysis.typeCheckingMode": "basic"
+    ]
 }
