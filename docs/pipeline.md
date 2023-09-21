@@ -4,7 +4,11 @@ In the start the data will be `{"query": ""}`. Through the pipeline steps it wil
 
 ## OutOfDomainDetection
 
-This steps add the `ood_class` key to the dictionary. The value will be the prediction from the OOD model.
+This step add the `ood_class` key to the dictionary. The value will be the prediction from the OOD model.
+
+## Reader
+
+This step adds the `reader` key to the dictionary. The value will be the prediction from the Reader model.
 
 ## Retriever
 
