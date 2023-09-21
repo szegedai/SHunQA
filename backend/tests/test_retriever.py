@@ -62,7 +62,4 @@ def test_bad_index():
     with pytest.raises(PipelineFailError) as e:
         pipeline_step.run(data)
 
-    assert (
-        e.value.error_code == "retriever"
-        and e.value.description == "index_not_found_exception"
-    )
+    assert e.value.error_code == "bad_index"

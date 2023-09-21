@@ -58,14 +58,12 @@ class Retriever(PipelineSteps):
                 context["_source"]["document"] for context in contexts
             ]
         
-        except exceptions.ApiError as e:
-            raise PipelineFailError("retriever", e.message, data) from e
+        except exceptions.NotFoundError as e:
+            raise PipelineFailError("bad_index", "Couldn't find the provided Elastic index", data) from e
         except exceptions.ConnectionError as e:
-            raise PipelineFailError("retriever", "Can't connect to Elastic", data) from e
+            raise PipelineFailError("cant_connect_to_elastic", "Can't connect to Elastic", data) from e
         except exceptions.ConnectionTimeout as e:
-            raise PipelineFailError("retriever", "Elastic connection timed out", data) from e
-        except Exception as e:
-            raise PipelineFailError("retriever", str(e), data) from e
+            raise PipelineFailError("elastic_connection_timeout", "Elastic connection timed out", data) from e
 
         return data
 
