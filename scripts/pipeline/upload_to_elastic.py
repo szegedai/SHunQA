@@ -7,7 +7,12 @@ import pandas as pd
 
 
 def upload_to_elastic(
-    data: pd.DataFrame, columns: list, es: Elasticsearch, index: str, properties: list
+    data: pd.DataFrame,
+    columns: list,
+    es: Elasticsearch,
+    index: str,
+    properties: list,
+    nested_columns: list = list(),
 ):
     """Uploads the lemmatized context, the official context and the embeddings to ElasticSearch.
 
@@ -17,11 +22,19 @@ def upload_to_elastic(
         es (Elasticsearch): The Elastic client.
         index (str): The name of the Elastic index.
         properties (list): The properties of the Elastic index.
+        nested_columns (list | None, optional): The nested columns. Defaults to None.
     """
 
     with alive_bar(len(data), title="Upload to Elastic") as bar:
         for i, row in data.iterrows():
             doc = {prop: row[column] for column, prop in zip(columns, properties)}
+            doc.update(
+                {
+                    prop: item
+                    for column in nested_columns
+                    for item, prop in zip(row[column], properties[len(columns) :])
+                }
+            )
 
             resp = es.index(
                 index=index,
@@ -55,8 +68,9 @@ if __name__ == "__main__":
 
     upload_to_elastic(
         data,
-        ["lemmatized_text", "text", "embedding"],
+        ["lemmatized_text", "text", "embedding", "file_names"],
         es,
         "4ig_context_embeddings",
-        ["document", "official_document", "embedding"],
+        ["document", "official_document", "embedding", "file_name", "h1", "h2", "h3"],
+        ["headers"],
     )

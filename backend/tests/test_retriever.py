@@ -7,16 +7,23 @@ from backend.exceptions import PipelineFailError, CheckFailError
 
 from transformers import AutoTokenizer, AutoModel
 import pickle
+import spacy
 
 es = Elasticsearch(
     "http://rgai3.inf.u-szeged.hu:3427/",
-    basic_auth=("elastic", "7ZQhi+zIL357DgjIjyi0"),
+    basic_auth=("elastic", ""),
     verify_certs=False,
 )
+
+nlp = spacy.load("hu_core_news_trf")
+nlp.remove_pipe("experimental_arc_predicter")
+nlp.remove_pipe("experimental_arc_labeler")
+nlp.remove_pipe("ner")
 
 pipeline_step = Retriever(
     es,
     "4ig_context_embeddings",
+    nlp,
     AutoModel.from_pretrained("facebook/mcontriever-msmarco"),
     AutoTokenizer.from_pretrained("facebook/mcontriever-msmarco"),
     1,
@@ -34,13 +41,27 @@ def test_query():
         "official_contexts": [
             "Munkába járás általános szabályai\nIdőbeli hatály\nA munkáltató az alábbi menetjegyek és havi bérletek árának a fent írt mértékét téríti meg a munkavállaló számára:\nbármely menetjegy vagy havi bérlet, amelyről a feltüntetett viszonylat alapján megállapítható, hogy alkalmas napi munkába járásra és hazautazásra,\nországosnál kisebb területi érvényességű havi bérlet, amely meghatározott területen érvényes, továbbá alkalmas és szükséges a napi munkába járásra és hazautazásra történő felhasználásra.\n\n"
         ],
+        "scores": [27.679768],
+        "h1": ["Munkába járás általános szabályai"],
+        "h2": ["Időbeli hatály"],
+        "h3": [None],
+        "file_names": ["HR9_4iG_Munkába járással kapcsolatos utazási költségtérítésről szóló szabályzat_2.0_clean.docx"],
     }
     assert pipeline_step.run(data) == expected_data
 
 
 def test_empty_query():
     data = {"query": ""}
-    expected_data = {"query": "", "official_contexts": [], "lemmatized_contexts": []}
+    expected_data = {
+        "query": "",
+        "official_contexts": [],
+        "lemmatized_contexts": [],
+        "scores": [],
+        "h1": [],
+        "h2": [],
+        "h3": [],
+        "file_names": [],
+    }
     assert pipeline_step.run(data) == expected_data
 
 
