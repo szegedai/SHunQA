@@ -9,3 +9,7 @@ This step add the `ood_class` key to the dictionary. The value will be the predi
 ## Reader
 
 This step adds the `reader` key to the dictionary. The value will be the prediction from the Reader model.
+
+## Retriever
+
+This step adds the `official_contexts` and the `lemmatized_contexts` keys to the dictionary. The values will be the predictions from ElasticSearch.
