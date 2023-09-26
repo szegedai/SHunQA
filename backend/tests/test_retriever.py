@@ -22,7 +22,7 @@ nlp.remove_pipe("ner")
 
 pipeline_step = Retriever(
     es,
-    "4ig_context_embeddings",
+    "context_embeddings",
     nlp,
     AutoModel.from_pretrained("facebook/mcontriever-msmarco"),
     AutoTokenizer.from_pretrained("facebook/mcontriever-msmarco"),
@@ -45,7 +45,7 @@ def test_query():
         "h1": ["Munkába járás általános szabályai"],
         "h2": ["Időbeli hatály"],
         "h3": [None],
-        "file_names": ["HR9_4iG_Munkába járással kapcsolatos utazási költségtérítésről szóló szabályzat_2.0_clean.docx"],
+        "file_names": ["doc_1.docx"],
     }
     assert pipeline_step.run(data) == expected_data
 
