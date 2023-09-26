@@ -20,7 +20,7 @@ def test_in_domain_question():
         "h2": ["Időbeli hatály"],
         "h3": [None],
         "file_names": [
-            "HR9_4iG_Munkába járással kapcsolatos utazási költségtérítésről szóló szabályzat_2.0_clean.docx"
+            "doc_1.docx"
         ],
     }
     assert "context" in pipeline_step.run(data).keys()
