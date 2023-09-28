@@ -68,5 +68,6 @@ class RetrieverAggregation(PipelineSteps):
             raise CheckFailError(
                 "missing_query_or_official_contexts",
                 "Missing query or official_contexts not passed correctly from retriever",
+                data
             )
         return data

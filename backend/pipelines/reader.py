@@ -77,6 +77,6 @@ class Reader(PipelineSteps):
         """
         if "query" not in data.keys() or "context" not in data.keys():
             raise CheckFailError(
-                "missing_key_reader", "Missing query or context in data dict keys"
+                "missing_key_reader", "Missing query or context in data dict keys", data
             )
         return data
