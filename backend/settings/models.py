@@ -23,7 +23,7 @@ class ModelSettings(BaseSettings):
     contriever_model_path: str
     qa_model_path: str
     ood_model_path: str
-    ood_model_class: float
+    ood_model_class: int
     spacy_model: str
     gpu: int = -1
 
@@ -62,7 +62,7 @@ pipeline_steps = [
             contriever_model,
             contriever_tokenizer,
             ood_model,
-            1,
+            model_settings.ood_model_class,
         ),
     ),
     (

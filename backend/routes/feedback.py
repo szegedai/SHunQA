@@ -2,7 +2,7 @@ import time
 from fastapi import APIRouter, HTTPException, Response
 from pydantic import BaseModel
 
-from backend.types import FeedbackLikeModel, FeedbackDislikeModel, ErrorModel
+from backend.model_types import FeedbackLikeModel, FeedbackDislikeModel, ErrorModel
 from backend.settings.environment import mongo_client
 
 route = APIRouter()

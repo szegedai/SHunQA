@@ -2,7 +2,7 @@ import time
 from fastapi import APIRouter, HTTPException
 import logging
 
-from backend.types import InputModel, OutputModel, ErrorModel
+from backend.model_types import InputModel, OutputModel, ErrorModel
 from backend.exceptions import CheckFailError, PipelineFailError
 from backend.settings import pipeline, pipeline_end
 from backend.settings.environment import mongo_client, environment

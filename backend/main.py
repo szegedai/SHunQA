@@ -13,4 +13,4 @@ app.include_router(feedback_route, prefix="/feedback")
 
 @app.get("/")
 async def root():
-    return {"debug": "true" if environment.debug else "false"}
+    return {"debug": environment.model_dump() | model_settings.model_dump() if environment.debug else "false"}
