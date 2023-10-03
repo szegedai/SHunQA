@@ -106,7 +106,7 @@ class Retriever(PipelineSteps):
             dict: The unmodified data after checking the keys.
         """
         if "query" not in data.keys():
-            raise CheckFailError("missing_query", "Missing query")
+            raise CheckFailError("missing_query", "Missing query", data)
         return data
 
     def lemmatize_text(self, text: str) -> str:
