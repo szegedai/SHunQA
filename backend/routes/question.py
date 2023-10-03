@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 route = APIRouter()
 
 
-@route.get("")
+@route.post("")
 async def question(input: InputModel):
     """This endpoint is used to ask a question.
 
@@ -26,6 +26,8 @@ async def question(input: InputModel):
         OutputModel: The answer to your question.
     """
     try:
+        if input.query == "":
+            return {}
         data = pipeline.run({"query": input.query})
         data = pipeline_end.run(data)
         return OutputModel(
