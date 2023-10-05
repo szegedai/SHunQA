@@ -13,5 +13,5 @@ const colorVariants = {
     red: 'hover:border-red-500 border-red-400 bg-red-100',
     gray: 'hover:border-gray-500 border-gray-400 bg-gray-100',
     green: 'border-lime-600 bg-gray-200/80 italic',
-  }
+}
 </script>

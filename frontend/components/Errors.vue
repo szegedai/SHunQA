@@ -1,7 +1,7 @@
 <template>
-    <Vue3Lottie :animation-data="NotSureJson" :height="400" :width="400" v-if="error == 'out_of_domain'"/>
-    <Vue3Lottie :animation-data="NoAnswerJson" :height="400" :width="400" v-else-if="error == 'reader_failed'"/>
-    <Vue3Lottie :animation-data="UnknownErrorJson" :height="400" :width="400" v-else/>
+    <Vue3Lottie :animation-data="NotSureJson" :height="400" :width="400" v-if="error == 'out_of_domain'" />
+    <Vue3Lottie :animation-data="NoAnswerJson" :height="400" :width="400" v-else-if="error == 'reader_failed'" />
+    <Vue3Lottie :animation-data="UnknownErrorJson" :height="400" :width="400" v-else />
 
     <Alert :text="$t('app.alerts.errors.outOfDomain')" color="red" v-if="error == 'out_of_domain'" />
     <Alert :text="$t('app.alerts.errors.noAnswer')" color="red" v-else-if="error == 'reader_failed'" />

@@ -1,5 +1,6 @@
 <template>
-    <div class="flex flex-row bg-slate-300 rounded-xl border border-gray-300 p-2 max-w-fit px-3 space-x-2 items-center align-middle hover:bg-slate-400/40 transition duration-300">
+    <div
+        class="flex flex-row bg-slate-300 rounded-xl border border-gray-300 p-2 max-w-fit px-3 space-x-2 items-center align-middle hover:bg-slate-400/40 transition duration-300">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="w-5 h-5 text-gray-600">
             <path stroke-linecap="round" stroke-linejoin="round"
