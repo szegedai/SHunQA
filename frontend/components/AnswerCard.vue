@@ -1,13 +1,11 @@
 <template>
-    <div class="rounded-md bg-slate-100 p-6 border border-gray-300 hover:bg-slate-200/60 transition duration-300" v-if="answer.relevant_context">
-        <div>
-            <p class="text-xl font-medium">{{ answer.metadata[0].source }}</p>
-            <p class="text-">{{ answer.metadata[0].section }}</p>
+    <div class="rounded-md bg-slate-100 p-6 border border-gray-300 hover:bg-slate-200/60 transition duration-300" v-if="answer.context">
+        <div v-for="metadata in answer.metadata">
+            <p class="text-xl font-medium">{{ metadata.title }}</p>
+            <p class="text-">{{ metadata.section }}</p>
         </div>
-
-        <blockquote class="p-4 my-4 border-l-4 border-lime-600 bg-gray-200/80" v-if="answer.answer">
-            <p class="italic font-medium leading-relaxed text-gray-900">{{ $t('l10n.quoteStart') }}{{ answer.answer }}{{ $t('l10n.quoteEnd') }}</p>
-        </blockquote>
+        
+        <Alert :text="$t('l10n.quoteStart') + answer.answer + $t('l10n.quoteEnd')" color="green" v-if="answer.answer" class="my-4"/>
 
         <div class="py-3 flex flex-row space-x-3 hover:brightness-125 transition duration-300 cursor-pointer"
             @click="open = !open">
@@ -34,20 +32,14 @@
         <div v-if="open" class="text-slate-900 mb-3 flex flex-col space-y-2">
             <h2 class="text-gray-500">{{ $t('app.context') }}</h2>
             <p class="text-justify">
-                {{ answer.relevant_context.slice(0, answer.start) }}
+                {{ answer.context.slice(0, answer.text_start) }}
                 <span class="before:block before:absolute before:-inset-0.5 before:bg-slate-400 relative inline-block" v-if="answer.end != 0">
                     <span class="relative text-white font-medium">
-                        {{ answer.relevant_context.slice(answer.start, answer.end) }}
+                        {{ answer.context.slice(answer.text_start, answer.text_end) }}
                     </span>
                 </span>
-                {{ answer.relevant_context.slice(answer.end, -1) }}
+                {{ answer.context.slice(answer.text_end, -1) }}
             </p>
-
-            <!-- 
-            <div class="text-gray-500 text-sm">
-                <p class="text-gray-500">Model score: {{ answer.model_score }}</p>
-                <p class="text-gray-500">Elastic score: {{ answer.elastic_score }}</p>
-            </div> -->
         </div>
 
         <div class="flex flex-col space-y-2" v-if="answer.metadata">
@@ -58,7 +50,7 @@
         </div>
         <div class="flex flex-row space-x-2 justify-end">
             <div class="hover:rotate-180 transition duration-300" v-if="config.debug"
-                :title="$t('debug.modelScore') + ': ' + answer.model_score + '\n' + $t('debug.elasticScore') + ': ' + answer.elastic_score">
+                :title="$t('debug.modelScore') + ': ' + answer.reader_score + '\n' + $t('debug.elasticScore') + ': ' + answer.elastic_score">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6 text-lime-600">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -83,8 +75,11 @@
             </div>
         </div>
     </div>
-    <NoAnswer v-if="!answer.relevant_context" />
-    <Feedback v-if="feedback" :answer="answer" :question="question" :system="system" :close-feedback="toggleOpen" />
+    <p v-if="answer.detail">
+        <Errors :error="answer.detail.error" />
+    </p>
+    <!-- <NoAnswer v-if="!answer.relevant_context" /> -->
+    <Feedback v-if="feedback" :answer="answer" :question="question" :close-feedback="toggleOpen" />
 </template>
 
 <script setup>
@@ -93,27 +88,50 @@ const config = useRuntimeConfig().public
 const props = defineProps({
     answer: {
         answer: String,
-        start: Number,
-        end: Number,
+        text_start: Number,
+        text_end: Number,
         id: Number,
-        lemmatized_context: String,
-        official_context: String,
+        context: String,
+        elastic_score: [Number],
         model_score: Number,
-        elastic_score: Number,
         metadata: [{
+            title: String,
             section: String,
-            source: String,
-            filename: String,
-        }]
+            file_name: String,
+        }],
+
+        detail: {
+            error: String,
+            id: String
+        }
     },
     question: String,
-    system: {
+    debug: {
         query: String,
-        size: Number,
-        elastic: String,
-        model_type: String,
-        time: Number,
-        id: String,
+        start_time: Number,
+        ood_class: Number,
+        official_contexts: [String],
+        lemmatized_contexts: [String],
+        scores: [Number],
+        h1: [String],
+        h2: [String],
+        h3: [String],
+        file_names: [String],
+        context: String,
+        reader: {
+            score: Number,
+            start: Number,
+            end: Number,
+            answer: String,
+        },
+        metadata: [{
+            title: String,
+            section: String,
+            file_name: String,
+        }],
+        end_time: Number,
+        elapsed_time: Number,
+        id: String
     }
 })
 
@@ -132,7 +150,7 @@ const sendFeedback = async () => {
         {
             method: 'POST',
             body: {
-                "id": props.system.id,
+                "id": props.answer.id,
             }
         }
         ).then(() => {

@@ -26,7 +26,6 @@ services:
       NUXT_APP_CDN_URL: ${NUXT_APP_CDN_URL}
       NUXT_PUBLIC_API_URL: ${NUXT_APP_CDN_URL}/api
       NUXT_PUBLIC_DEBUG: ${DEBUG}
-      NUXT_PUBLIC_ELASTIC_TABLES: ${ELASTIC_TABLES}
 
   nginx:
     image: nginx

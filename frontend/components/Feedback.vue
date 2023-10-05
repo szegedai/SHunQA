@@ -57,26 +57,17 @@
 const props = defineProps({
     answer: {
         answer: String,
-        start: Number,
-        end: Number,
+        text_start: Number,
+        text_end: Number,
         id: Number,
-        lemmatized_context: String,
-        official_context: String,
+        context: String,
+        elastic_score: [Number],
         model_score: Number,
-        elastic_score: Number,
         metadata: [{
+            title: String,
             section: String,
-            source: String,
-            filename: String,
+            file_name: String,
         }]
-    },
-    system: {
-        query: String,
-        size: Number,
-        elastic: String,
-        model_type: String,
-        time: Number,
-        id: String,
     },
     question: String,
     closeFeedback: Function
@@ -95,7 +86,7 @@ const sendFeedback = async () => {
             {
                 method: 'POST',
                 body: {
-                    "id": props.system.id,
+                    "id": props.answer.id,
                     "what_should_be": whatShouldBe.value,
                     "whats_wrong": whatsWrong.value,
                     "anything_else": anythingElse.value,
