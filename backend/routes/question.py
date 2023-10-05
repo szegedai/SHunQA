@@ -53,7 +53,7 @@ async def question(input: InputModel):
             }
         )
         raise HTTPException(
-            status_code=400,
+            status_code=200,
             detail=ErrorModel(error=e.error_code, id=data["id"]).model_dump(),
         )
     except PipelineFailError as e:
@@ -68,7 +68,7 @@ async def question(input: InputModel):
             }
         )
         raise HTTPException(
-            status_code=400,
+            status_code=200,
             detail=ErrorModel(error=e.error_code, id=data["id"]).model_dump(),
         )
     except Exception as e:
@@ -82,5 +82,5 @@ async def question(input: InputModel):
             }
         )
         raise HTTPException(
-            status_code=400, detail=ErrorModel(error="unknown_error").model_dump()
+            status_code=200, detail=ErrorModel(error="unknown_error").model_dump()
         )
