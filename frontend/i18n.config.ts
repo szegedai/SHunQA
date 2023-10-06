@@ -33,6 +33,15 @@ export default defineI18nConfig(() => ({
             send: 'Küldés',
           }
         },
+        alerts: {
+          startQuestioning: 'Tegyél fel egy kérdést!',
+          workingOnIt: 'Dolgozunk rajta...',
+          errors: {
+            outOfDomain: 'A kérdés nem tartozik a témakörbe.',
+            noAnswer: 'Nem találtunk választ a kérdésre.',
+            unknownError: 'Egyéb hiba történt.',
+          },
+        },
       },
       l10n: {
         quoteStart: '„',
@@ -73,6 +82,15 @@ export default defineI18nConfig(() => ({
             anythingElse: 'Anything else would you want to add to the feedback?',
             send: 'Send',
           }
+        },
+        alerts: {
+          startQuestioning: 'Ask a question!',
+          workingOnIt: 'Working on it...',
+          errors: {
+            outOfDomain: 'The question is out of domain.',
+            noAnswer: 'We couldn\'t find an answer to the question.',
+            unknownError: 'An unknown error occurred.',
+          },
         },
       },
       l10n: {

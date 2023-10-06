@@ -17,7 +17,6 @@ export default defineNuxtConfig({
     public: {
       apiUrl: '',
       debug: '',
-      elasticTables: '',
     }
   },
   modules: [
