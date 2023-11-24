@@ -39,7 +39,8 @@ class RetrieverAggregation(PipelineSteps):
 
         """
         try:
-            data["context"] = "\n".join(data["official_contexts"])
+            # data["context"] = "\n".join(data["official_contexts"])
+            data["context"] = "\n".join(list(set(data["large_contexts"])))
         except Exception:
             raise PipelineFailError(
                 "context_aggregation_failed",
