@@ -4,7 +4,7 @@ import spacy
 from transformers import AutoModel, AutoTokenizer, pipeline as hf_pipeline
 
 from backend.Pipeline import Pipeline
-from backend.pipelines.metadata_maker import MetadataMaker
+from backend.pipelines.context_finder import ContextFinder
 from backend.pipelines.mongo_save import MongoSave
 from backend.pipelines.out_of_domain_detection import OutOfDomainDetection
 from backend.pipelines.retriever import Retriever
@@ -88,8 +88,8 @@ pipeline_steps = [
         ),
     ),
     (
-        "metadata_maker",
-        MetadataMaker(),
+        "context_finder",
+        ContextFinder(),
     ),
 ]
 

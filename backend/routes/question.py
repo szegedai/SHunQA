@@ -32,9 +32,9 @@ async def question(input: InputModel):
         data = pipeline_end.run(data)
         return OutputModel(
             answer=data["reader"]["answer"],
-            context=data["context"],
-            text_start=data["reader"]["start"],
-            text_end=data["reader"]["end"],
+            context=data["context_finder"]["extracted_context"],
+            text_start=data["context_finder"]["start"],
+            text_end=data["context_finder"]["end"],
             metadata=data["metadata"],
             id=data["id"],
             debug=data if environment.debug else None,
