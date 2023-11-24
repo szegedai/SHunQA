@@ -12,6 +12,7 @@ class Environment(BaseSettings):
     elastic_password: str
  
     elastic_index: str
+    elastic_index_large: str
     retriever_size: int
     retriever_contriever_weight: int
 

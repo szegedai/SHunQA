@@ -8,19 +8,20 @@ class ContextFinder(PipelineSteps):
         pass
 
     def run(self, data: dict) -> dict | PipelineFailError:
-        # ({h1}\n{h2}\n{h3}\n{context}\n)*context_num (-\n)
-        # answer=data["reader"]["answer"],
-        # context=data["context"],
-        # text_start=data["reader"]["start"],
-        # text_end=data["reader"]["end"],
-        # data["official_contexts"]
+        """ Run the Context Finder pipeline.
 
-        # kiszámolni a contextek határát
-        # megkeresni, hogy ez melyik contextben van
-        # megtartani azt a contextet, elshiftelni a kijelölt választ
-        # levágni az elejéről a metát (ha lehetséges), elshiftelni a választ
+        Args:
+            data (dict): A dictionary containing input data.
 
-        context_lengths = [len(context) for context in data["official_contexts"]]
+        Raises:
+            PipelineFailError: If the context is not found.
+
+        Returns:
+            dict | PipelineFailError: A dictionary containing the updated data.
+        """
+
+        # context_lengths = [len(context) for context in data["official_contexts"]]
+        context_lengths = [len(context) for context in list(set(data["large_contexts"]))]
         context_starts = [sum(context_lengths[:i]) for i in range(len(context_lengths))]
         context_ends = [
             sum(context_lengths[: i + 1]) for i in range(len(context_lengths))
@@ -55,21 +56,21 @@ class ContextFinder(PipelineSteps):
         answer_end -= context_start
 
         # metadata = f"{data['h1'][context_id]}\n{data['h2'][context_id]}\n{data['h3'][context_id]}\n\n"
-        metadata = ""
-        metadata += (
-            data["h1"][context_id] + "\n" if data["h1"][context_id] else ""
-        )
-        metadata += (
-            data["h2"][context_id] + "\n" if data["h2"][context_id] else ""
-        )
-        metadata += (
-            data["h3"][context_id] + "\n" if data["h3"][context_id] else ""
-        )
-        metadata += "\n"
-        if answer_start > len(metadata):
-            context = context[len(metadata) :]
-            answer_start -= len(metadata)
-            answer_end -= len(metadata)
+        # metadata = ""
+        # metadata += (
+        #     data["h1"][context_id] + "\n" if data["h1"][context_id] else ""
+        # )
+        # metadata += (
+        #     data["h2"][context_id] + "\n" if data["h2"][context_id] else ""
+        # )
+        # metadata += (
+        #     data["h3"][context_id] + "\n" if data["h3"][context_id] else ""
+        # )
+        # metadata += "\n"
+        # if answer_start > len(metadata):
+        #     context = context[len(metadata) :]
+        #     answer_start -= len(metadata)
+        #     answer_end -= len(metadata)
 
         context_finder_data = {
             "extracted_context": context,

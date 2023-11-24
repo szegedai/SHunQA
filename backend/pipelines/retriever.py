@@ -15,6 +15,7 @@ class Retriever(PipelineSteps):
         contriever_tokenizer: PreTrainedTokenizer | PreTrainedTokenizerFast,
         size: int,
         contriever_weight: int,
+        elasticsearch_index_large: str,
     ):
         self.es = es
         self.elasticsearch_index = elasticsearch_index
@@ -23,6 +24,7 @@ class Retriever(PipelineSteps):
         self.contriever_tokenizer = contriever_tokenizer
         self.size = size
         self.contriever_weight = contriever_weight
+        self.elasticsearch_index_large = elasticsearch_index_large
 
     def run(self, data: dict) -> dict | PipelineFailError:
         """Runs the retriever pipeline step.
@@ -54,7 +56,7 @@ class Retriever(PipelineSteps):
                 },
             }
 
-            s = self.es.search(index=self.elasticsearch_index, body=body)
+            s = self.es.search(index=self.elasticsearch_index, body=body) # type: ignore
             contexts = list(s["hits"]["hits"])
             data.update(
                 {
@@ -65,8 +67,21 @@ class Retriever(PipelineSteps):
                     "h2": [],
                     "h3": [],
                     "file_names": [],
+                    "large_contexts": [],
                 }
             )
+
+            for context in contexts:
+                body = {
+                    "query": {
+                        "match": {
+                            "official_document": context["_source"]["official_document"]
+                        }
+                    }
+                }
+                s = self.es.search(index=self.elasticsearch_index_large, body=body)["hits"]["hits"][0] # type: ignore
+                data["large_contexts"].append(s["_source"]["official_document"])
+
             for context in contexts:
                 data["official_contexts"].append(
                     context["_source"]["official_document"]

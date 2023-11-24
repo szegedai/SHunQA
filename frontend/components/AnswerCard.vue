@@ -33,7 +33,7 @@
 
         <div v-if="open" class="text-slate-900 mb-3 flex flex-col space-y-2">
             <h2 class="text-gray-500">{{ $t('app.context') }}</h2>
-            <p class="text-justify">
+            <p class="text-justify whitespace-pre-line">
                 {{ answer.context.slice(0, answer.text_start) }}
                 <span class="before:block before:absolute before:-inset-0.5 before:bg-slate-400 relative inline-block"
                     v-if="answer.end != 0">

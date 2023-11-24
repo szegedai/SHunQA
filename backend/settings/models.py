@@ -75,6 +75,7 @@ pipeline_steps = [
             contriever_tokenizer,
             environment.retriever_size,
             environment.retriever_contriever_weight,
+            environment.elastic_index_large,
         ),
     ),
     (
